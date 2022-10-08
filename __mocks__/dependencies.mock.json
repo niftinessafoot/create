@@ -1,0 +1,17 @@
+{
+  "base": {
+    "dependencies": ["base"],
+    "devDependencies": ["basedev"],
+    "peerDependencies": ["baseper"]
+  },
+  "react": {
+    "dependencies": ["react"],
+    "devDependencies": ["devreact"],
+    "peerDependencies": ["devpeer"]
+  },
+  "site": {
+    "dependencies": ["site"],
+    "devDependencies": ["sitedev"],
+    "peerDependencies": ["sitepeer"]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "author": "Matthew Smith @niftinessafoot",
+  "description": "This is just the test data.",
+  "directories": ["__tests__"],
+  "dist": "dist",
+  "entry": "index.ts",
+  "isModule": true,
+  "isReact": false,
+  "keywords": [],
+  "name": "@afoot/module",
+  "private": true,
+  "reactDirectories": ["src/components"],
+  "siteDirectories": ["functions", "src/js", "src/styles"],
+  "src": "src",
+  "type": "module",
+  "version": "0.1.0"
+}
