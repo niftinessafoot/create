@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "./dist/types/",
+    "emitDeclarationOnly": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "isolatedModules": true,
+    "target": "esnext",
+    "moduleResolution": "node"
+  },
+  "include": ["src/**/*"]
+}

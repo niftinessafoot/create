@@ -4,4 +4,4 @@
 
 import { init } from './components/create-project.js';
 
-console.log(init());
+init();
