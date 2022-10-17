@@ -1,17 +1,17 @@
 {
   "base": {
-    "dependencies": ["base"],
-    "devDependencies": ["basedev"],
-    "peerDependencies": ["baseper"]
+    "prod": ["base"],
+    "dev": ["basedev"],
+    "peer": ["basepeer"]
   },
   "react": {
-    "dependencies": ["react"],
-    "devDependencies": ["devreact"],
-    "peerDependencies": ["devpeer"]
+    "prod": ["react"],
+    "dev": ["devreact"],
+    "peer": ["devpeer"]
   },
   "site": {
-    "dependencies": ["site"],
-    "devDependencies": ["sitedev"],
-    "peerDependencies": ["sitepeer"]
+    "prod": ["site"],
+    "dev": ["sitedev"],
+    "peer": ["sitepeer"]
   }
 }

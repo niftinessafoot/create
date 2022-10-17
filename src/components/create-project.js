@@ -1,24 +1,35 @@
 import path, { dirname } from 'path';
 import chalk from 'chalk';
-import execSync from 'child_process';
 import { fileURLToPath } from 'url';
 
 import dependencies from '../dependencies.json' assert { type: 'json' };
 import { generateConfig } from './generate-config.js';
 import { generateDirectories } from './generate-directories.js';
 import { generatePackageJson } from './generate-package-json.js';
-/* import { installDependencies } from './install-dependencies.js';
- */
 import { copyFiles } from './copy-files.js';
+import { installDependencies } from './install-dependencies.js';
 
-const formatError = (err) => `\n🚨  ${red(err)}\n`;
-const errorCallback = (err) => err && console.error(formatError(err));
+const formatError = (err) => `🚨  ${red(err)}`;
+const formatWarning = (warn) => `⚠️  ${yellow(warn)}`;
+const fileList = (arr) => arr.map((ele) => `  • ${ele}`).join('\n');
 
 const { log, warn, error, dir, group, groupEnd, clear } = console;
 const { green, red, yellow, cyan, bold, dim } = chalk;
 const _ = `\n`;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const msg = (message, code) => {
+  switch (code) {
+    case 'err':
+      error(formatError(message));
+      break;
+    case 'warn':
+      error(formatWarning(message));
+      break;
+    default:
+      log(message);
+  }
+};
 
 /**
  * Configuration object. Inherits overrides from {#link program}
@@ -30,6 +41,22 @@ const packageMeta = {
   description: '',
   private: true,
   keywords: [],
+  license: 'MIT',
+};
+const internalConfig = {
+  __dirname,
+  __filename,
+  msg,
+  formatError,
+  fileList,
+  get isReact() {
+    const reg = /(j|t)sx/;
+    const str = this.entry?.split('.').pop();
+    return reg.test(str);
+  },
+  get isModule() {
+    return this.type === 'module';
+  },
 };
 const config = {
   src: 'src',
@@ -40,17 +67,7 @@ const config = {
   siteDirectories: ['functions', 'src/js', 'src/styles'],
   reactDirectories: ['src/components'],
   ...packageMeta,
-  get isReact() {
-    const reg = /(j|t)sx/;
-    const str = this.entry?.split('.').pop();
-    return reg.test(str);
-  },
-  get isModule() {
-    return this.type === 'module';
-  },
-  get url() {
-    return import.meta.url;
-  },
+  ...internalConfig,
 };
 
 /** Initializer. Calls out separated methods. */
@@ -89,17 +106,17 @@ async function init() {
   log(_);
   groupEnd();
 
-  /*   group(bold('Copying config files.'));
-  copyFiles(config);
+  group(bold('Copying config files.'));
+  const copyOutput = copyFiles(config);
+  log(`\nThe following files have been copied over:\n${green(copyOutput)}`);
   log(_);
-  groupEnd(); */
+  groupEnd();
 
-  /*   group(bold('Installing Base Dependencies'));
+  group(bold('Installing Base Dependencies'));
   const installOutput = await installDependencies(config, dependencies);
-  log(`npm Output:`);
   log(installOutput);
   log(_);
-  groupEnd(); */
+  groupEnd();
 
   log(bold(`✨  Done! Go forth and build snazziness!`));
   log(_);

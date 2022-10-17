@@ -1,17 +1,27 @@
 import { writeFileSync, readFileSync, access, existsSync } from 'fs';
-import prettier from 'prettier';
-// import { formatError } from './utils.js';
+import { format } from 'prettier';
 
 function _buildScripts(config) {
-  const scripts = {
-    build: `rollup -c rollup.config.js -i ${config.entry}`,
+  const { scripts, entry } = config;
+  const defaultScripts = {
+    build: `rollup -c rollup.config.js -i ${entry}`,
+    test: 'jest',
   };
-  return scripts;
+  return { ...defaultScripts, ...scripts };
 }
 
 function generatePackageJson(config) {
-  const { name, version, description, author, keywords, entry, isReact, type } =
-    config;
+  const {
+    name,
+    version,
+    description,
+    author,
+    keywords,
+    license,
+    entry,
+    isReact,
+    type,
+  } = config;
   const packageJson = {
     name,
     version,
@@ -19,7 +29,7 @@ function generatePackageJson(config) {
     author,
     keywords,
     entry,
-    license: 'MIT',
+    license,
     scripts: _buildScripts(config),
   };
 
@@ -31,21 +41,23 @@ function generatePackageJson(config) {
   }
 
   let msg;
+  let existing = {};
 
   if (existsSync('./package.json')) {
     msg = 'File already exists.\nMerging unique fields.';
-    const existing = JSON.parse(readFileSync('./package.json'));
+    existing = JSON.parse(readFileSync('./package.json'));
     // TODO: We want the opposite. New keys in generated package.json should be ported over.
-    Object.keys(existing).forEach((key) => {
-      if (!packageJson.hasOwnProperty(key)) {
+    /*     Object.keys(packageJson).forEach((key) => {
+      if (!existing.hasOwnProperty(key)) {
         msg += `\n\t• ${key}`;
-        packageJson[key] = existing[key];
+        existing[key] = packageJson[key];
       }
-    });
+    }); */
   }
+  const output = { ...packageJson, ...existing };
 
-  const str = JSON.stringify(packageJson);
-  const packageString = prettier.format(str, {
+  const str = JSON.stringify(output);
+  const packageString = format(str, {
     parser: 'json-stringify',
   });
 

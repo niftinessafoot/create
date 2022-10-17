@@ -1,5 +1,4 @@
 import { Command, Option } from 'commander';
-import { errorCallback, errorFormat } from './utils.js';
 const program = new Command();
 
 /**
@@ -8,6 +7,8 @@ const program = new Command();
  * @returns {Object} Modified config object.
  */
 function generateConfig(config) {
+  const { formatError } = config;
+
   program.description('Bootstrap a module, React component, or website.');
   program.option('-n, --name <name>', 'project name', config.name);
   program.option('-s, --src <src>', 'source directory', config.src);
@@ -24,7 +25,7 @@ function generateConfig(config) {
     outputError: (str, write) => {
       write(str);
     },
-    writeErr: (str) => process.stderr.write(errorFormat(str)),
+    writeErr: (str) => process.stderr.write(formatError(str)),
   });
 
   program.parse();

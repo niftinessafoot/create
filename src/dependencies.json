@@ -1,17 +1,17 @@
 {
   "base": {
-    "dependencies": [],
-    "devDependencies": [],
-    "peerDependencies": []
+    "prod": ["@afoot/DERAIL-sorted-array", "@afoot/derp"],
+    "dev": [],
+    "peer": ["@afoot/foo"]
   },
   "react": {
-    "dependencies": [],
-    "devDependencies": [],
-    "peerDependencies": []
+    "prod": ["react"],
+    "dev": [],
+    "peer": []
   },
   "site": {
-    "dependencies": [],
-    "devDependencies": [],
-    "peerDependencies": []
+    "prod": ["@afoot/sorted-array"],
+    "dev": [],
+    "peer": []
   }
 }

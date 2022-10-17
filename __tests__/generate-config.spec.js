@@ -46,6 +46,10 @@ describe('Generate Config', () => {
 
   it('should reject invalid types', () => {
     jest.spyOn(process, 'exit').mockImplementation((errorCode) => errorCode);
+    config.formatError = (err) => {
+      return err;
+    };
+
     process.argv.push('-t', 'failure');
 
     expect(() => {

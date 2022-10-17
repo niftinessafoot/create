@@ -5,24 +5,110 @@ import { spawn } from 'child_process';
 
 jest.mock('child_process');
 
+const emptyDependencies = {
+  prod: [],
+  dev: [],
+  peer: [],
+};
+
+const mockSpawn = (command, args, options) => {
+  const forcedReturnCode = +args.includes('fail');
+  const iterator = {
+    async *[Symbol.asyncIterator]() {
+      yield true;
+      yield true;
+    },
+  };
+  const on = (evt, listener) => {
+    if (typeof listener === 'function') {
+      listener.call(null, forcedReturnCode);
+    }
+  };
+
+  return { stdout: iterator, stderr: iterator, on };
+};
+
 describe('Install Dependencies', () => {
-  it('should call `npm i` with base dependencies', async () => {
+  beforeEach(() => {
+    spawn.mockImplementation(mockSpawn);
+
+    config.msg = () => {};
+    config.fileList = () => {};
+  });
+
+  it('should call `npm i` with default flags', async () => {
     const output = await installDependencies(config, dependencies);
     const { base } = dependencies;
 
-    expect(spawn).toHaveBeenCalledWith(
+    expect(spawn).toHaveBeenNthCalledWith(
+      1,
       'npm',
-      ['i', '-D', 'react'],
+      ['i', '', ...base.prod],
+      expect.anything()
+    );
+    expect(spawn).toHaveBeenNthCalledWith(
+      2,
+      'npm',
+      ['i', '--save-dev', ...base.dev],
+      expect.anything()
+    );
+    expect(spawn).toHaveBeenNthCalledWith(
+      3,
+      'npm',
+      ['i', '--save-peer', ...base.peer],
       expect.anything()
     );
   });
 
-  /*  it('should install react dependencies when react configured', async () => {
+  it('should call `npm i` with both site and react dependencies', async () => {
     config.isReact = true;
-    const output = await installDependencies(config, dependencies);
-    console.log(output);
+    config.isModule = false;
 
-    expect(true).toBeTruthy();
+    const output = await installDependencies(config, dependencies);
+    const { base } = dependencies;
+
+    expect(spawn).toHaveBeenNthCalledWith(
+      1,
+      'npm',
+      ['i', '', ...base.prod],
+      expect.anything()
+    );
+    expect(spawn).toHaveBeenNthCalledWith(
+      2,
+      'npm',
+      ['i', '--save-dev', ...base.dev],
+      expect.anything()
+    );
+    expect(spawn).toHaveBeenNthCalledWith(
+      3,
+      'npm',
+      ['i', '--save-peer', ...base.peer],
+      expect.anything()
+    );
   });
-  */
+
+  it('should bypass a dependency type if the arrays are empty', async () => {
+    dependencies.base.dev = [];
+    dependencies.react.dev = [];
+    dependencies.site.dev = [];
+
+    const expected = 'Dependencies Complete\nPeer Dependencies Complete';
+    const output = await installDependencies(config, dependencies);
+
+    expect(output).toEqual(expected);
+  });
+
+  it('should throw installation errors if a package cannot install', async () => {
+    dependencies.base = {
+      ...emptyDependencies,
+      ...{ prod: ['fail'] },
+    };
+    dependencies.react = { ...emptyDependencies };
+    dependencies.site = { ...emptyDependencies };
+
+    const expectedOutput = '⚠️ Issues with Dependencies Installation';
+    const output = await installDependencies(config, dependencies);
+
+    expect(output).toEqual(expectedOutput);
+  });
 });
