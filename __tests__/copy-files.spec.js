@@ -9,7 +9,8 @@ describe('Copy Files', () => {
   beforeEach(() => {
     config = {
       __dirname: '',
-      msg: (str, code) => false,
+      msg: jest.fn((str, code) => false),
+      fileList: jest.fn((data) => data),
     };
   });
 
@@ -21,17 +22,53 @@ describe('Copy Files', () => {
     expect(copyFileSync).toHaveBeenCalledWith('/../files/foo', './foo', 1);
   });
 
-  it('should not copy files when they already exist', () => {
-    const spy = jest.spyOn(config, 'msg');
+  it('should generate backup files if copied file already exists', () => {
+    const msgSpy = jest.spyOn(config, 'msg');
+    const fileName = 'foo.txt';
+    const fileLocation = `/../files/${fileName}`;
+    const expectedFileNames = [`./foo.txt`, './foo.DEFAULT.txt'];
 
-    readdirSync.mockReturnValue(['foo']);
+    readdirSync.mockReturnValue([fileName]);
+    copyFileSync.mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const output = copyFiles(config);
+
+    expect(output).toEqual('✅  No new files copied.');
+    expect(copyFileSync).nthCalledWith(
+      1,
+      fileLocation,
+      expectedFileNames[0],
+      1
+    );
+    expect(copyFileSync).nthCalledWith(
+      2,
+      fileLocation,
+      expectedFileNames[1],
+      1
+    );
+
+    expect(msgSpy).toHaveBeenCalledWith(
+      `\`${fileName}\` already exists. Generating backup.`,
+      'warn'
+    );
+  });
+
+  it('should not generate anything if the backup already exists', () => {
+    const msgSpy = jest.spyOn(config, 'msg');
+    const fileName = 'foo.txt';
+    const fileLocation = `/../files/${fileName}`;
+    const expectedFileNames = [`./foo.txt`, './foo.DEFAULT.txt'];
+
+    readdirSync.mockReturnValue([fileName]);
     copyFileSync.mockImplementation(() => {
       throw new Error();
     });
     const output = copyFiles(config);
 
-    expect(spy).toHaveBeenCalledWith(
-      'foo already exists. Will not overwrite.',
+    expect(output).toEqual('✅  No new files copied.');
+    expect(msgSpy).toHaveBeenCalledWith(
+      `\`${expectedFileNames[1]}\` already exists. No new file copied.`,
       'warn'
     );
   });

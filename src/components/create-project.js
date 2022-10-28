@@ -6,25 +6,27 @@ import dependencies from '../dependencies.json' assert { type: 'json' };
 import { generateConfig } from './generate-config.js';
 import { generateDirectories } from './generate-directories.js';
 import { generatePackageJson } from './generate-package-json.js';
-import { copyFiles } from './copy-files.js';
+import { copyFiles, writeFiles } from './copy-files.js';
 import { installDependencies } from './install-dependencies.js';
 
 const formatError = (err) => `🚨  ${red(err)}`;
 const formatWarning = (warn) => `⚠️  ${yellow(warn)}`;
-const fileList = (arr) => arr.map((ele) => `  • ${ele}`).join('\n');
+const fileList = (arr) => arr.map((ele) => `  • ${green(ele)}`).join('\n');
 
-const { log, warn, error, dir, group, groupEnd, clear } = console;
+const { log, dir, group, groupEnd, clear } = console;
 const { green, red, yellow, cyan, bold, dim } = chalk;
 const _ = `\n`;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const msg = (message, code) => {
+  const { log, error, warn } = console;
+
   switch (code) {
     case 'err':
       error(formatError(message));
       break;
     case 'warn':
-      error(formatWarning(message));
+      warn(formatWarning(message));
       break;
     default:
       log(message);
@@ -42,6 +44,14 @@ const packageMeta = {
   private: true,
   keywords: [],
   license: 'MIT',
+  type: 'module',
+  browserslist: ['defaults'],
+  files: [],
+  repository: {
+    type: 'git',
+    url: 'https://github.com/niftinessafoot/',
+  },
+  homepage: 'https://github.com/niftinessafoot/',
 };
 const internalConfig = {
   __dirname,
@@ -54,15 +64,20 @@ const internalConfig = {
     const str = this.entry?.split('.').pop();
     return reg.test(str);
   },
+  get isTypescript() {
+    const reg = /tsx?/;
+    const str = this.entry?.split('.').pop();
+
+    return reg.test(str);
+  },
   get isModule() {
     return this.type === 'module';
   },
 };
 const config = {
+  entry: 'index.ts',
   src: 'src',
   dist: 'dist',
-  entry: 'index.ts',
-  type: 'module',
   directories: ['__tests__', 'src'],
   siteDirectories: ['functions', 'src/js', 'src/styles'],
   reactDirectories: ['src/components'],
@@ -85,7 +100,7 @@ async function init() {
   const settings = generateConfig(config);
 
   log('Building with the following params:');
-  dir(settings);
+  dir(packageMeta);
   log(_);
   groupEnd();
 
@@ -96,7 +111,7 @@ async function init() {
    */
   group(bold(`📂  Generating directories`));
   const directoryOutput = await generateDirectories(settings);
-  console.dir(directoryOutput);
+  log(fileList(directoryOutput));
   log(_);
   groupEnd();
 
@@ -106,14 +121,18 @@ async function init() {
   log(_);
   groupEnd();
 
-  group(bold('Copying config files.'));
+  group(bold('👯‍♀️ Copying config files.'));
   const copyOutput = copyFiles(config);
-  log(`\nThe following files have been copied over:\n${green(copyOutput)}`);
   log(_);
+  log(copyOutput);
+  log(_);
+  const writeOutput = writeFiles(config);
+  log(writeOutput);
   groupEnd();
 
-  group(bold('Installing Base Dependencies'));
-  const installOutput = await installDependencies(config, dependencies);
+  group(bold('🧱 Installing Dependencies'));
+  // const installOutput = await installDependencies(config, dependencies);
+  const installOutput = 'skipping install';
   log(installOutput);
   log(_);
   groupEnd();

@@ -1,17 +1,45 @@
 {
   "base": {
-    "prod": ["@afoot/DERAIL-sorted-array", "@afoot/derp"],
-    "dev": [],
-    "peer": ["@afoot/foo"]
-  },
-  "react": {
-    "prod": ["react"],
-    "dev": [],
+    "prod": [],
+    "dev": [
+      "@babel/cli",
+      "@babel/core",
+      "@babel/preset-env",
+      "@babel/preset-react",
+      "@babel/preset-typescript",
+      "@rollup/plugin-babel",
+      "@testing-library/jest-dom",
+      "@testing-library/react",
+      "@types/jest",
+      "@types/react",
+      "@typescript-eslint/eslint-plugin",
+      "@typescript-eslint/parser",
+      "eslint-config-prettier",
+      "eslint-plugin-react",
+      "eslint-plugin-tsdoc",
+      "eslint",
+      "jest-environment-jsdom",
+      "jest",
+      "prettier",
+      "rollup-plugin-terser",
+      "rollup",
+      "stylelint-config-prettier-scss",
+      "stylelint-config-standard-scss",
+      "stylelint",
+      "typedoc-plugin-markdown",
+      "typedoc",
+      "typescript"
+    ],
     "peer": []
   },
-  "site": {
-    "prod": ["@afoot/sorted-array"],
+  "react": {
+    "prod": [],
     "dev": [],
+    "peer": ["react", "react-dom"]
+  },
+  "site": {
+    "prod": [],
+    "dev": ["webpack"],
     "peer": []
   }
 }

@@ -3,6 +3,7 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
     "prettier"
   ],
   "parser": "@typescript-eslint/parser",
@@ -15,5 +16,6 @@
     "jest": true
   },
   "globals": { "define": "readonly" },
-  "rules": { "tsdoc/syntax": "warn" }
+  "rules": { "tsdoc/syntax": "warn" },
+  "settings": { "react": { "version": "detect" } }
 }

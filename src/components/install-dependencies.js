@@ -36,7 +36,7 @@ async function installDependencies(config, dependencies) {
       const str = arr.join(' ');
       const { modifier, name } = dependencyMap[keys[index]];
 
-      msg(`Installing ${name}\n${fileList(arr)}\n`);
+      msg(`Running 'npm i ${modifier}' on: \n${fileList(arr)}\n`);
 
       const output = spawn('npm', ['i', modifier, ...arr], {
         cwd: process.cwd(),

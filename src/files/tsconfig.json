@@ -8,7 +8,17 @@
     "noImplicitReturns": true,
     "isolatedModules": true,
     "target": "esnext",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "jsx": "preserve",
+    "allowSyntheticDefaultImports": true,
+    "module": "es6",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "baseUrl": "./",
+    "paths": {
+      "Components/*": ["src/components/*"]
+    }
   },
   "include": ["src/**/*"]
 }

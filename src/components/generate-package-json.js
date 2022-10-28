@@ -2,11 +2,15 @@ import { writeFileSync, readFileSync, access, existsSync } from 'fs';
 import { format } from 'prettier';
 
 function _buildScripts(config) {
-  const { scripts, entry } = config;
+  const { scripts, entry, src, isTypescript } = config;
   const defaultScripts = {
-    build: `rollup -c rollup.config.js -i ${entry}`,
+    build: `rollup -c rollup.config.js -i ${src}/${entry}`,
     test: 'jest',
   };
+  if (isTypescript) {
+    defaultScripts.types = 'tsc';
+  }
+
   return { ...defaultScripts, ...scripts };
 }
 
@@ -20,7 +24,15 @@ function generatePackageJson(config) {
     license,
     entry,
     isReact,
+    isTypescript,
     type,
+    browserslist,
+    files,
+    repository,
+    formatError,
+    msg,
+    fileList,
+    dist,
   } = config;
   const packageJson = {
     name,
@@ -31,41 +43,64 @@ function generatePackageJson(config) {
     entry,
     license,
     scripts: _buildScripts(config),
+    browserslist,
+    files,
+    repository,
   };
 
   if (type === 'module') {
     packageJson.keywords.push('module');
+    packageJson.type = type;
   }
   if (isReact) {
     packageJson.keywords.push('react');
   }
 
-  let msg;
+  //TODO: Why does this return false?
+  console.log({ isTypescript }, entry);
+  if (isTypescript) {
+    packageJson.keywords.push('typescript');
+    packageJson.types = `${dist}/types/index.d.ts`;
+  }
+
   let existing = {};
+  let existingMessage;
 
   if (existsSync('./package.json')) {
-    msg = 'File already exists.\nMerging unique fields.';
+    msg('`package.json` already exists.\n', 'warn');
+    msg(`Attempting to append missing default properties.\n`);
     existing = JSON.parse(readFileSync('./package.json'));
-    // TODO: We want the opposite. New keys in generated package.json should be ported over.
-    /*     Object.keys(packageJson).forEach((key) => {
-      if (!existing.hasOwnProperty(key)) {
-        msg += `\n\t• ${key}`;
-        existing[key] = packageJson[key];
-      }
-    }); */
-  }
-  const output = { ...packageJson, ...existing };
 
-  const str = JSON.stringify(output);
-  const packageString = format(str, {
+    const missing = Object.keys(packageJson)
+      .filter((ele) => {
+        return !Object.keys(existing).includes(ele);
+      })
+      .sort();
+
+    existingMessage = '✅  `package.json` complete. No fields to merge.';
+    if (missing.length) {
+      msg(
+        `The following default fields have been appended to \`package.json\`:`
+      );
+      msg(`${fileList(missing)}`);
+      existingMessage =
+        '✅  `package.json` updated with missing default fields.';
+    }
+  }
+
+  const mergedConfigs = { ...packageJson, ...existing };
+  const rawJson = JSON.stringify(mergedConfigs);
+  const packageString = format(rawJson, {
     parser: 'json-stringify',
   });
 
+  let errorMessage;
+
   writeFileSync('./package.json', packageString, (err) => {
-    msg = err;
+    errorMessage = formatError(err);
   });
 
-  return msg || 'Complete!';
+  return errorMessage || existingMessage || '✅ `package.json` created.';
 }
 
 export { generatePackageJson };
