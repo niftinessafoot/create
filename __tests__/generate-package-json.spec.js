@@ -26,6 +26,7 @@ describe('Generate `package.json`', () => {
       entry: 'index.js',
       keywords: ['module'],
       scripts: { build: 'foo', test: 'bar' },
+      type: 'module',
     };
 
     const output = generatePackageJson(settings);
@@ -74,6 +75,28 @@ describe('Generate `package.json`', () => {
     expect(json).toEqual(expected);
   });
 
+  it('should generate a new package.json with TypeScript options', () => {
+    settings.entry = 'index.tsx';
+    settings.type = 'site';
+    settings.isTypescript = true;
+    settings.dist = 'dist';
+
+    const expected = {
+      name: 'Matthew',
+      entry: 'index.tsx',
+      keywords: ['typescript'],
+      scripts: { build: 'foo', test: 'bar', types: 'tsc' },
+      types: 'dist/types/index.d.ts',
+    };
+
+    const output = generatePackageJson(settings);
+
+    const calls = writeFileSync.mock.calls;
+    const json = JSON.parse(calls[0][1]);
+
+    expect(json).toEqual(expected);
+  });
+
   describe('Existing `package.json`:', () => {
     //TODO: This test fails when running standalone, but passes when run with others in scope. Why?
     beforeEach(() => {
@@ -87,6 +110,7 @@ describe('Generate `package.json`', () => {
         keywords: ['module'],
         entry: 'index.js',
         scripts: { build: 'foo', test: 'bar' },
+        type: 'module',
       };
 
       const output = generatePackageJson(settings);
@@ -130,7 +154,7 @@ describe('Generate `package.json`', () => {
       const calls = writeFileSync.mock.calls;
       const json = JSON.parse(calls[0][1]);
 
-      expect(settings.msg).toHaveBeenCalledTimes(2);
+      expect(settings.msg).toHaveBeenCalledTimes(4);
       expect(output).toEqual(
         '✅  `package.json` complete. No fields to merge.'
       );

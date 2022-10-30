@@ -115,23 +115,23 @@ async function init() {
   log(_);
   groupEnd();
 
-  group(bold(`📝  Initializing NPM project for ${cyan(config.name)}`));
-  const packageOutput = generatePackageJson(config);
+  group(bold(`📝  Initializing NPM project for ${cyan(settings.name)}`));
+  const packageOutput = generatePackageJson(settings);
   log(packageOutput);
   log(_);
   groupEnd();
 
   group(bold('👯‍♀️ Copying config files.'));
-  const copyOutput = copyFiles(config);
+  const copyOutput = copyFiles(settings);
   log(_);
   log(copyOutput);
   log(_);
-  const writeOutput = writeFiles(config);
+  const writeOutput = writeFiles(settings);
   log(writeOutput);
   groupEnd();
 
   group(bold('🧱 Installing Dependencies'));
-  // const installOutput = await installDependencies(config, dependencies);
+  // const installOutput = await installDependencies(settings, dependencies);
   const installOutput = 'skipping install';
   log(installOutput);
   log(_);
