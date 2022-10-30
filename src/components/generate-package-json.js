@@ -2,13 +2,26 @@ import { writeFileSync, readFileSync, access, existsSync } from 'fs';
 import { format } from 'prettier';
 
 function _buildScripts(config) {
-  const { scripts, entry, src, isTypescript } = config;
+  const { scripts, entry, src, dist, isTypescript } = config;
   const defaultScripts = {
     build: `rollup -c rollup.config.js -i ${src}/${entry}`,
     test: 'jest',
+    'test:coverage': 'jest --coverage',
+    clean: `rm -f ${dist}/*`,
   };
   if (isTypescript) {
     defaultScripts.types = 'tsc';
+  }
+
+  if (!isModule) {
+    const reactScripts = {
+      build: 'webpack --node-env production',
+      dev: 'webpack -w',
+      start: 'webpack serve --open',
+      'start:prod': 'webpack serve --open --node-env production',
+    };
+
+    Object.assign(reactScripts, defaultScripts);
   }
 
   return { ...defaultScripts, ...scripts };
