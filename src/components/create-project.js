@@ -59,20 +59,6 @@ const internalConfig = {
   msg,
   formatError,
   fileList,
-  get isReact() {
-    const reg = /(j|t)sx/;
-    const str = this.entry?.split('.').pop();
-    return reg.test(str);
-  },
-  get isTypescript() {
-    const reg = /tsx?/;
-    const str = this.entry?.split('.').pop();
-
-    return reg.test(str);
-  },
-  get isModule() {
-    return this.type === 'module';
-  },
 };
 const config = {
   entry: 'index.ts',
@@ -84,6 +70,29 @@ const config = {
   ...packageMeta,
   ...internalConfig,
 };
+
+/* Because the getters are used in other files, they need to be bound to `config`—they lose `this` on import.*/
+Object.defineProperty(config, 'isReact', {
+  get: function () {
+    const reg = /(j|t)sx/;
+    const str = this.entry?.split('.').pop();
+    return reg.test(str);
+  }.bind(config),
+});
+
+Object.defineProperty(config, 'isTypescript', {
+  get: function () {
+    const reg = /tsx?/;
+    const str = this.entry?.split('.').pop();
+    return reg.test(str);
+  }.bind(config),
+});
+
+Object.defineProperty(config, 'isModule', {
+  get: function () {
+    return this.type === 'module';
+  }.bind(config),
+});
 
 /** Initializer. Calls out separated methods. */
 async function init() {
