@@ -1,5 +1,4 @@
 import { writeFileSync, readFileSync, access, existsSync } from 'fs';
-import { hasUncaughtExceptionCaptureCallback } from 'process';
 import { generatePackageJson } from '../src/components/generate-package-json.js';
 
 jest.mock('fs');
