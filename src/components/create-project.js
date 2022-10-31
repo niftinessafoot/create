@@ -66,7 +66,7 @@ const config = {
   src: 'src',
   dist: 'dist',
   directories: ['__tests__', 'src'],
-  siteDirectories: ['functions', 'src/js', 'src/styles'],
+  siteDirectories: ['functions', 'src/js', 'src/styles', 'src/pages'],
   reactDirectories: ['src/components'],
   ...packageMeta,
   ...internalConfig,

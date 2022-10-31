@@ -1,6 +1,6 @@
 import { writeFileSync, readFileSync, existsSync } from 'fs';
-import { generatePackageJson } from '../src/components/generate-package-json.js';
-import { CONSTANTS } from '../src/constants.js';
+import { generatePackageJson } from '../src/components/generate-package-json';
+import { CONSTANTS } from '../src/constants';
 
 jest.mock('fs');
 

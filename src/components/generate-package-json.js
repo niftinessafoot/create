@@ -1,6 +1,6 @@
 import { writeFileSync, readFileSync, access, existsSync } from 'fs';
 import { format } from 'prettier';
-import CONSTANTS from '../constants.js';
+import { CONSTANTS } from '../constants';
 
 function _buildScripts(config) {
   const { scripts, entry, src, dist, isTypescript, isModule } = config;

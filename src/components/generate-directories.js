@@ -1,8 +1,8 @@
 import { mkdirSync } from 'fs';
 
 function generateDirectories(settings) {
-  const { directories } = settings;
-  const { siteDirectories, reactDirectories, type, isReact } = settings;
+  const { directories, siteDirectories, reactDirectories, type, isReact } =
+    settings;
   const output = [...directories];
 
   if (type === 'site') {
