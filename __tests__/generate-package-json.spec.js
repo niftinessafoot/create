@@ -1,18 +1,42 @@
-import { writeFileSync, readFileSync, access, existsSync } from 'fs';
+import { writeFileSync, readFileSync, existsSync } from 'fs';
 import { generatePackageJson } from '../src/components/generate-package-json.js';
 
 jest.mock('fs');
 
 describe('Generate `package.json`', () => {
   let settings;
+  let scripts;
+  let siteScripts;
+  let basePackageJson;
 
   beforeEach(() => {
-    settings = {
+    scripts = {
+      build: 'foo',
+      test: 'bar',
+      clean: 'buzz',
+      'test:coverage': 'squeaky',
+    };
+    siteScripts = {
+      dev: 'dev',
+      start: 'start',
+      'start:prod': 'start:prod',
+    };
+    basePackageJson = {
       name: 'Matthew',
       entry: 'index.js',
       keywords: [],
       type: 'module',
-      scripts: { build: 'foo', test: 'bar' },
+      scripts,
+      browserslist: '',
+      files: '',
+      repository: '',
+    };
+    settings = {
+      ...basePackageJson,
+      src: 'src',
+      dist: 'dist',
+      isModule: true,
+      isTypescript: false,
       formatError: jest.fn((data) => data),
       msg: jest.fn((data) => data),
       fileList: jest.fn((data) => data),
@@ -20,133 +44,71 @@ describe('Generate `package.json`', () => {
   });
 
   it('should generate a new package.json if one doesn’t exist', () => {
-    const expected = {
-      name: 'Matthew',
-      entry: 'index.js',
-      keywords: ['module'],
-      scripts: { build: 'foo', test: 'bar' },
-      type: 'module',
-    };
-
     const output = generatePackageJson(settings);
 
     const calls = writeFileSync.mock.calls;
     const json = JSON.parse(calls[0][1]);
 
-    expect(json).toEqual(expected);
+    expect(json).toEqual(basePackageJson);
   });
 
   it('should generate a new package.json with site options', () => {
     settings.type = 'site';
+    settings.isModule = false;
 
-    const expected = {
-      name: 'Matthew',
-      entry: 'index.js',
-      keywords: [],
-      scripts: { build: 'foo', test: 'bar' },
-    };
+    delete basePackageJson.type; //`type` is only for modules.
+    Object.assign(basePackageJson.scripts, siteScripts);
 
     const output = generatePackageJson(settings);
 
     const calls = writeFileSync.mock.calls;
     const json = JSON.parse(calls[0][1]);
 
-    expect(json).toEqual(expected);
+    expect(json).toEqual(basePackageJson);
   });
 
   it('should generate a new package.json with react options', () => {
-    settings.entry = 'index.tsx';
-    settings.type = 'site';
+    settings.entry = 'index.jsx';
     settings.isReact = true;
 
-    const expected = {
-      name: 'Matthew',
-      entry: 'index.tsx',
-      keywords: ['react'],
-      scripts: { build: 'foo', test: 'bar' },
-    };
+    basePackageJson.keywords = ['module', 'react'];
+    basePackageJson.entry = 'index.jsx';
 
     const output = generatePackageJson(settings);
 
     const calls = writeFileSync.mock.calls;
     const json = JSON.parse(calls[0][1]);
 
-    expect(json).toEqual(expected);
+    expect(json).toEqual(basePackageJson);
   });
 
   it('should generate a new package.json with TypeScript options', () => {
     settings.entry = 'index.tsx';
-    settings.type = 'site';
     settings.isTypescript = true;
     settings.dist = 'dist';
 
-    const expected = {
-      name: 'Matthew',
-      entry: 'index.tsx',
-      keywords: ['typescript'],
-      scripts: { build: 'foo', test: 'bar', types: 'tsc' },
-      types: 'dist/types/index.d.ts',
-    };
+    basePackageJson.types = 'dist/types/index.d.ts';
+    basePackageJson.entry = 'index.tsx';
+    basePackageJson.scripts.types = 'tsc';
+    basePackageJson.keywords.push('typescript');
 
     const output = generatePackageJson(settings);
 
     const calls = writeFileSync.mock.calls;
     const json = JSON.parse(calls[0][1]);
 
-    expect(json).toEqual(expected);
+    expect(json).toEqual(basePackageJson);
   });
 
   describe('Existing `package.json`:', () => {
-    //TODO: This test fails when running standalone, but passes when run with others in scope. Why?
+    //TODO: This test block fails when running standalone, but passes when run with others in scope. Why?
     beforeEach(() => {
       existsSync.mockReturnValue(true);
     });
 
     it('should integrate existing configs', () => {
       readFileSync.mockReturnValue(JSON.stringify({ name: 'Steve' }));
-      const expected = {
-        name: 'Steve',
-        keywords: ['module'],
-        entry: 'index.js',
-        scripts: { build: 'foo', test: 'bar' },
-        type: 'module',
-      };
-
-      const output = generatePackageJson(settings);
-
-      const calls = writeFileSync.mock.calls;
-      const json = JSON.parse(calls[0][1]);
-
-      expect(output).toEqual(
-        '✅  `package.json` updated with missing default fields.'
-      );
-
-      expect(json).toEqual(expected);
-    });
-
-    it('should report if there are no missing configs', () => {
-      const existing = {
-        name: 'Steve',
-        entry: 'index.js',
-        keywords: [],
-        scripts: { build: 'foo', test: 'bar' },
-        author: '',
-        description: '',
-        license: '',
-        version: 0,
-      };
-
-      const expected = {
-        name: 'Steve',
-        keywords: [],
-        entry: 'index.js',
-        scripts: { build: 'foo', test: 'bar' },
-        author: '',
-        description: '',
-        license: '',
-        version: 0,
-      };
-      readFileSync.mockReturnValue(JSON.stringify(existing));
+      basePackageJson.name = 'Steve';
 
       const output = generatePackageJson(settings);
 
@@ -155,9 +117,33 @@ describe('Generate `package.json`', () => {
 
       expect(settings.msg).toHaveBeenCalledTimes(4);
       expect(output).toEqual(
+        '✅  `package.json` updated with missing default fields.'
+      );
+      expect(json).toEqual(basePackageJson);
+    });
+
+    it('should report if there are no missing configs', () => {
+      const existing = Object.assign(basePackageJson, {
+        name: 'Dave',
+        keywords: ['module'],
+        author: '',
+        description: '',
+        license: '',
+        version: '',
+      });
+
+      readFileSync.mockReturnValue(JSON.stringify(existing));
+
+      const output = generatePackageJson(settings);
+
+      const calls = writeFileSync.mock.calls;
+      const json = JSON.parse(calls[0][1]);
+
+      expect(settings.msg).toHaveBeenCalledTimes(2);
+      expect(output).toEqual(
         '✅  `package.json` complete. No fields to merge.'
       );
-      expect(json).toEqual(expected);
+      expect(json).toEqual(basePackageJson);
     });
   });
 
@@ -165,13 +151,6 @@ describe('Generate `package.json`', () => {
     writeFileSync.mockImplementation((...args) => {
       args[2].call(null, 'Error');
     });
-
-    const expected = {
-      name: 'Matthew',
-      keywords: ['module'],
-      entry: 'index.js',
-      scripts: { build: 'foo', test: 'bar' },
-    };
 
     const output = generatePackageJson(settings);
 

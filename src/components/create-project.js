@@ -1,4 +1,4 @@
-import path, { dirname } from 'path';
+import { dirname } from 'path';
 import chalk from 'chalk';
 import { fileURLToPath } from 'url';
 
@@ -41,6 +41,7 @@ const packageMeta = {
   version: '0.1.0',
   author: 'Matthew Smith @niftinessafoot',
   description: '',
+  entry: 'index.ts',
   private: true,
   keywords: [],
   license: 'MIT',
@@ -58,10 +59,10 @@ const internalConfig = {
   __filename,
   msg,
   formatError,
+  formatWarning,
   fileList,
 };
 const config = {
-  entry: 'index.ts',
   src: 'src',
   dist: 'dist',
   directories: ['__tests__', 'src'],
@@ -137,6 +138,7 @@ async function init() {
   log(_);
   const writeOutput = writeFiles(settings);
   log(writeOutput);
+  log(_);
   groupEnd();
 
   group(bold('🧱 Installing Dependencies'));

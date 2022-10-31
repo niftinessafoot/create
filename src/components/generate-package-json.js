@@ -2,7 +2,7 @@ import { writeFileSync, readFileSync, access, existsSync } from 'fs';
 import { format } from 'prettier';
 
 function _buildScripts(config) {
-  const { scripts, entry, src, dist, isTypescript } = config;
+  const { scripts, entry, src, dist, isTypescript, isModule } = config;
   const defaultScripts = {
     build: `rollup -c rollup.config.js -i ${src}/${entry}`,
     test: 'jest',
@@ -14,14 +14,14 @@ function _buildScripts(config) {
   }
 
   if (!isModule) {
-    const reactScripts = {
+    const siteScripts = {
       build: 'webpack --node-env production',
       dev: 'webpack -w',
       start: 'webpack serve --open',
       'start:prod': 'webpack serve --open --node-env production',
     };
 
-    Object.assign(reactScripts, defaultScripts);
+    Object.assign(defaultScripts, siteScripts);
   }
 
   return { ...defaultScripts, ...scripts };
@@ -38,6 +38,7 @@ function generatePackageJson(config) {
     entry,
     isReact,
     isTypescript,
+    isModule,
     type,
     browserslist,
     files,
@@ -61,7 +62,7 @@ function generatePackageJson(config) {
     repository,
   };
 
-  if (type === 'module') {
+  if (isModule) {
     packageJson.keywords.push('module');
     packageJson.type = type;
   }
@@ -69,8 +70,6 @@ function generatePackageJson(config) {
     packageJson.keywords.push('react');
   }
 
-  //TODO: Why does this return false?
-  console.log({ isTypescript }, entry);
   if (isTypescript) {
     packageJson.keywords.push('typescript');
     packageJson.types = `${dist}/types/index.d.ts`;
