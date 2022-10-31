@@ -1,5 +1,6 @@
 import { writeFileSync, readFileSync, existsSync } from 'fs';
 import { generatePackageJson } from '../src/components/generate-package-json.js';
+import { CONSTANTS } from '../src/constants.js';
 
 jest.mock('fs');
 
@@ -116,9 +117,7 @@ describe('Generate `package.json`', () => {
       const json = JSON.parse(calls[0][1]);
 
       expect(settings.msg).toHaveBeenCalledTimes(4);
-      expect(output).toEqual(
-        '✅  `package.json` updated with missing default fields.'
-      );
+      expect(output).toEqual(CONSTANTS.generatePackageJson.completeMerged);
       expect(json).toEqual(basePackageJson);
     });
 
@@ -140,9 +139,7 @@ describe('Generate `package.json`', () => {
       const json = JSON.parse(calls[0][1]);
 
       expect(settings.msg).toHaveBeenCalledTimes(2);
-      expect(output).toEqual(
-        '✅  `package.json` complete. No fields to merge.'
-      );
+      expect(output).toEqual(CONSTANTS.generatePackageJson.completeExisting);
       expect(json).toEqual(basePackageJson);
     });
   });

@@ -1,5 +1,6 @@
 import { writeFileSync, readFileSync, access, existsSync } from 'fs';
 import { format } from 'prettier';
+import CONSTANTS from '../constants.js';
 
 function _buildScripts(config) {
   const { scripts, entry, src, dist, isTypescript, isModule } = config;
@@ -79,8 +80,8 @@ function generatePackageJson(config) {
   let existingMessage;
 
   if (existsSync('./package.json')) {
-    msg('`package.json` already exists.\n', 'warn');
-    msg(`Attempting to append missing default properties.\n`);
+    msg(CONSTANTS.generatePackageJson.existsOne, 'warn');
+    msg(CONSTANTS.generatePackageJson.existsTwo);
     existing = JSON.parse(readFileSync('./package.json'));
 
     const missing = Object.keys(packageJson)
@@ -89,14 +90,11 @@ function generatePackageJson(config) {
       })
       .sort();
 
-    existingMessage = '✅  `package.json` complete. No fields to merge.';
+    existingMessage = CONSTANTS.generatePackageJson.completeExisting;
     if (missing.length) {
-      msg(
-        `The following default fields have been appended to \`package.json\`:`
-      );
+      msg(CONSTANTS.generatePackageJson.defaultRecap);
       msg(`${fileList(missing)}`);
-      existingMessage =
-        '✅  `package.json` updated with missing default fields.';
+      existingMessage = CONSTANTS.generatePackageJson.completeMerged;
     }
   }
 
@@ -112,7 +110,9 @@ function generatePackageJson(config) {
     errorMessage = formatError(err);
   });
 
-  return errorMessage || existingMessage || '✅ `package.json` created.';
+  return (
+    errorMessage || existingMessage || CONSTANTS.generatePackageJson.success
+  );
 }
 
 export { generatePackageJson };

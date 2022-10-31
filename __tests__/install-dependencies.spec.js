@@ -2,6 +2,7 @@ import { installDependencies } from '../src/components/install-dependencies.js';
 import config from '../__mocks__/config.mock.json';
 import dependencies from '../__mocks__/dependencies.mock.json';
 import { spawn } from 'child_process';
+import { CONSTANTS } from '../src/constants.js';
 
 jest.mock('child_process');
 
@@ -92,7 +93,10 @@ describe('Install Dependencies', () => {
     dependencies.react.dev = [];
     dependencies.site.dev = [];
 
-    const expected = 'Dependencies Complete\nPeer Dependencies Complete';
+    const { success } = CONSTANTS.installDependencies;
+    const expected = `${success('Dependencies')}\n${success(
+      'Peer Dependencies'
+    )}`;
     const output = await installDependencies(config, dependencies);
 
     expect(output).toEqual(expected);
@@ -106,7 +110,7 @@ describe('Install Dependencies', () => {
     dependencies.react = { ...emptyDependencies };
     dependencies.site = { ...emptyDependencies };
 
-    const expectedOutput = '⚠️ Issues with Dependencies Installation';
+    const expectedOutput = CONSTANTS.installDependencies.fail('Dependencies');
     const output = await installDependencies(config, dependencies);
 
     expect(output).toEqual(expectedOutput);

@@ -1,4 +1,5 @@
 import { spawn } from 'cross-spawn'; // For longer-running, data-intense jobs.
+import { CONSTANTS } from '../constants';
 //TODO: Pull problem package name to highlight.
 
 async function installDependencies(config, dependencies) {
@@ -6,48 +7,53 @@ async function installDependencies(config, dependencies) {
   const { base, react, site } = dependencies;
 
   const dependencyMap = {
-    prod: { name: 'Dependencies', modifier: '' },
-    dev: { name: 'Dev Dependencies', modifier: '--save-dev' },
-    peer: { name: 'Peer Dependencies', modifier: '--save-peer' },
+    prod: { category: 'Dependencies', modifier: '' },
+    dev: { category: 'Dev Dependencies', modifier: '--save-dev' },
+    peer: { category: 'Peer Dependencies', modifier: '--save-peer' },
   };
   const keys = Object.keys(base);
 
-  const mergedDependencies = keys.map((type) => {
+  const mergedDependencies = keys.map((category) => {
     if (isReact) {
-      base[type].push(...react[type]);
+      base[category].push(...react[category]);
     }
 
     if (!isModule) {
-      base[type].push(...site[type]);
+      base[category].push(...site[category]);
     }
 
-    return base[type];
+    return base[category];
   });
 
   const promises = mergedDependencies
-    .filter((arr, index) => {
-      const len = arr.length;
+    .filter((dependencyList, index) => {
+      const len = dependencyList.length;
       if (!len) {
         keys.splice(index, 1);
       }
       return len;
     })
-    .map(async (arr, index, source) => {
-      const str = arr.join(' ');
-      const { modifier, name } = dependencyMap[keys[index]];
+    .map(async (dependencyList, index, source) => {
+      const formattedList = dependencyList.join(' ');
+      const { modifier, category } = dependencyMap[keys[index]];
 
-      msg(`Running 'npm i ${modifier}' on: \n${fileList(arr)}\n`);
+      msg(
+        CONSTANTS.installDependencies.installList(
+          modifier,
+          fileList(dependencyList)
+        )
+      );
 
-      const output = spawn('npm', ['i', modifier, ...arr], {
+      const output = spawn('npm', ['i', modifier, ...dependencyList], {
         cwd: process.cwd(),
       });
 
-      let info = `${str}\n`;
+      let info = `${formattedList}\n`;
       let err = '';
 
       for await (const data of output.stderr) {
         if (!err) {
-          err = `Installation Errors\n\nCould not install: ${str}\n\n`;
+          err = CONSTANTS.installDependencies.error(formattedList);
         }
 
         err += data;
@@ -65,10 +71,10 @@ async function installDependencies(config, dependencies) {
 
       if (exitCode) {
         msg(err, 'err');
-        return `⚠️ Issues with ${name} Installation`;
+        return CONSTANTS.installDependencies.fail(category);
       }
 
-      return `${name} Complete`;
+      return CONSTANTS.installDependencies.success(category);
     });
 
   return Promise.all(promises).then((...args) => {
