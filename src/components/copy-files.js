@@ -19,7 +19,6 @@ function writeFiles(config) {
   const formattedContent = format(rawContent, { parser: 'babel-ts' });
 
   try {
-    //TODO: Change default output based on TypesScript and React
     writeFileSync(filePath, formattedContent, { flag: 'wx' });
     message = CONSTANTS.writeFiles.msg.success(filePath);
   } catch (err) {
@@ -30,12 +29,32 @@ function writeFiles(config) {
 }
 
 function copyFiles(config) {
-  const { __dirname, msg, fileList } = config;
-  //TODO: Convert reading the directory into an array to allow the flag-specific rules below.
-  //TODO: Copy flag-specific files e.g. webpack.config
+  const { __dirname, msg, fileList, isModule, isTypescript } = config;
   const filePath = `${__dirname}/../files/`;
   const files = readdirSync(filePath);
   const copiedFiles = [];
+  const moduleDisallow = ['webpack.config.js', 'webpack.template.html'];
+  const siteDisallow = ['rollup.config.js'];
+  const tsDisallow = ['tsconfig.json'];
+
+  const pruneArray = (files, disallow) => {
+    disallow.forEach((file) => {
+      const index = files.indexOf(file);
+      if (index > -1) {
+        files.splice(index, 1);
+      }
+    });
+  };
+
+  if (isModule) {
+    pruneArray(files, moduleDisallow);
+  } else {
+    pruneArray(files, siteDisallow);
+  }
+
+  if (!isTypescript) {
+    pruneArray(files, tsDisallow);
+  }
 
   Array.isArray(files) &&
     files.forEach((file) => {

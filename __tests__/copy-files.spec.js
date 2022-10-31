@@ -1,6 +1,6 @@
 import { copyFileSync, writeFileSync, readdirSync } from 'fs';
 import { copyFiles, writeFiles } from '../src/components/copy-files.js';
-import CONTSTANTS, { CONSTANTS } from '../src/constants.js';
+import { CONSTANTS } from '../src/constants.js';
 import { format } from 'prettier';
 
 jest.mock('fs');
@@ -74,6 +74,49 @@ describe('Copy Files', () => {
       CONSTANTS.copyFiles.failDuplicate(expected),
       'err'
     );
+  });
+
+  describe('Prune files based on flags', () => {
+    it('should omit site files when generating a module', () => {
+      config.isModule = true;
+      const msgSpy = jest.spyOn(config, 'msg');
+      const files = ['foo.txt', 'webpack.config.js', 'rollup.config.js'];
+      const expected = ['./foo.txt', './rollup.config.js'];
+
+      readdirSync.mockReturnValue(files);
+
+      const output = copyFiles(config);
+      const callArray = copyFileSync.mock.calls.map((arr) => arr[1]);
+
+      expect(callArray).toEqual(expect.arrayContaining(expected));
+    });
+
+    it('should omit module files when generating a site', () => {
+      config.isModule = false;
+      const msgSpy = jest.spyOn(config, 'msg');
+      const files = ['foo.txt', 'webpack.config.js', 'rollup.config.js'];
+      const expected = ['./foo.txt', './webpack.config.js'];
+
+      readdirSync.mockReturnValue(files);
+
+      const output = copyFiles(config);
+      const callArray = copyFileSync.mock.calls.map((arr) => arr[1]);
+
+      expect(callArray).toEqual(expect.arrayContaining(expected));
+    });
+    it('should omit typescript files when generating non-ts files', () => {
+      config.isTypescript = false;
+      const msgSpy = jest.spyOn(config, 'msg');
+      const files = ['foo.txt', 'tsconfig.json'];
+      const expected = ['./foo.txt'];
+
+      readdirSync.mockReturnValue(files);
+
+      const output = copyFiles(config);
+      const callArray = copyFileSync.mock.calls.map((arr) => arr[1]);
+
+      expect(callArray).toEqual(expect.arrayContaining(expected));
+    });
   });
 });
 
