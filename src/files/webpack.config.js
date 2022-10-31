@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const yaml = require('yamljs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -13,7 +14,7 @@ const pages = Object.fromEntries(
 );
 
 const entries = {
-  // index: './src/index.tsx',
+  index: './src/index.tsx',
   ...pages,
 };
 const addHTMLPages = (() => {
@@ -71,13 +72,8 @@ module.exports = {
         },
       },
       {
-        test: /\.jsx?$/i,
+        test: /\.(j|t)sx?$/i,
         loader: 'babel-loader',
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.tsx?$/i,
-        use: 'ts-loader',
         exclude: /node_modules/,
       },
       {

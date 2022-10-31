@@ -1,5 +1,5 @@
 import { spawn } from 'cross-spawn'; // For longer-running, data-intense jobs.
-import { CONSTANTS } from '../constants';
+import { CONSTANTS } from '../constants.js';
 //TODO: Pull problem package name to highlight.
 
 async function installDependencies(config, dependencies) {

@@ -11,7 +11,6 @@
       "@testing-library/jest-dom",
       "@testing-library/react",
       "@types/jest",
-      "@types/react",
       "@typescript-eslint/eslint-plugin",
       "@typescript-eslint/parser",
       "eslint-config-prettier",
@@ -34,12 +33,26 @@
   },
   "react": {
     "prod": [],
-    "dev": [],
+    "dev": ["@types/react", "@types/react-dom", "react-test-renderer"],
     "peer": ["react", "react-dom"]
   },
   "site": {
     "prod": [],
-    "dev": ["webpack"],
+    "dev": [
+      "babel-loader",
+      "css-loader",
+      "dotenv-webpack",
+      "html-loader",
+      "html-webpack-plugin",
+      "mini-css-extract-plugin",
+      "sass-loader",
+      "sass",
+      "style-loader",
+      "webpack-cli",
+      "webpack-dev-server",
+      "yamljs",
+      "webpack"
+    ],
     "peer": []
   }
 }

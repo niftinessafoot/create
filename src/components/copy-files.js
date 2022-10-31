@@ -2,27 +2,49 @@ import { readdirSync, copyFileSync, writeFileSync, constants } from 'fs';
 import { format } from 'prettier';
 import { CONSTANTS } from '../constants.js';
 
-function writeFiles(config) {
-  const { src, entry, isReact, isTypescript, msg, formatWarning } = config;
+function writeStarterFile(config) {
+  const { src, entry, isReact, isTypescript, isModule, msg, formatWarning } =
+    config;
   const filePath = `./${src}/${entry}`;
   let message;
   let returnType = isTypescript ? ':boolean' : '';
 
-  msg(CONSTANTS.writeFiles.msg.init(filePath));
+  msg(CONSTANTS.writeStarterFile.msg.init(filePath));
 
-  let rawContent = CONSTANTS.writeFiles.baseFunction(returnType);
+  let rawContent = CONSTANTS.writeStarterFile.baseFunction(returnType);
   if (isReact) {
-    returnType = isTypescript ? ':React.ReactElement' : '';
-    rawContent = CONSTANTS.writeFiles.reactFunction(returnType);
+    returnType = isTypescript ? ': ReactElement' : '';
+    if (isModule) {
+      rawContent = CONSTANTS.writeStarterFile.reactFunction(returnType);
+    } else {
+      rawContent = CONSTANTS.writeStarterFile.reactSiteFunction(returnType);
+    }
   }
 
   const formattedContent = format(rawContent, { parser: 'babel-ts' });
 
   try {
     writeFileSync(filePath, formattedContent, { flag: 'wx' });
-    message = CONSTANTS.writeFiles.msg.success(filePath);
+    message = CONSTANTS.writeStarterFile.msg.success(filePath);
   } catch (err) {
-    message = formatWarning(CONSTANTS.writeFiles.msg.fail(filePath));
+    message = formatWarning(CONSTANTS.writeStarterFile.msg.fail(filePath));
+  }
+
+  return message;
+}
+
+function generateReadme(config) {
+  const { name, description, formatWarning } = config;
+  const rawContent = CONSTANTS.generateReadme.content(name, description);
+  const formattedContent = format(rawContent, { parser: 'markdown' });
+
+  let message;
+
+  try {
+    writeFileSync('./README.md', formattedContent, { flag: 'w' });
+    message = CONSTANTS.generateReadme.success;
+  } catch (err) {
+    message = formatWarning(CONSTANTS.generateReadme.fail);
   }
 
   return message;
@@ -83,4 +105,4 @@ function copyFiles(config) {
     ? `${message}\n${fileList(copiedFiles)}`
     : emptyMessage;
 }
-export { copyFiles, writeFiles };
+export { copyFiles, writeStarterFile, generateReadme };

@@ -6,7 +6,7 @@ import dependencies from '../dependencies.json' assert { type: 'json' };
 import { generateConfig } from './generate-config.js';
 import { generateDirectories } from './generate-directories.js';
 import { generatePackageJson } from './generate-package-json.js';
-import { copyFiles, writeFiles } from './copy-files.js';
+import { copyFiles, generateReadme, writeStarterFile } from './copy-files.js';
 import { installDependencies } from './install-dependencies.js';
 
 const formatError = (err) => `🚨  ${red(err)}`;
@@ -100,7 +100,9 @@ async function init() {
   clear();
 
   /* Generate Config */
+  log(_);
   group(bold('⚙️  Configuring new project'));
+  log(''.padEnd(25, '_'));
   log(_);
   /**
    * Section: Generating configuration.
@@ -136,8 +138,11 @@ async function init() {
   log(_);
   log(copyOutput);
   log(_);
-  const writeOutput = writeFiles(settings);
+  const writeOutput = writeStarterFile(settings);
   log(writeOutput);
+  log(_);
+  const readmeOutput = generateReadme(settings);
+  log(readmeOutput);
   log(_);
   groupEnd();
 

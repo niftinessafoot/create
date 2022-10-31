@@ -1,5 +1,5 @@
 import { copyFileSync, writeFileSync, readdirSync } from 'fs';
-import { copyFiles, writeFiles } from '../src/components/copy-files.js';
+import { copyFiles, writeStarterFile } from '../src/components/copy-files.js';
 import { CONSTANTS } from '../src/constants.js';
 import { format } from 'prettier';
 
@@ -120,7 +120,7 @@ describe('Copy Files', () => {
   });
 });
 
-describe('Write Files', () => {
+describe('Write Starter File', () => {
   let config = {};
 
   beforeEach(() => {
@@ -139,33 +139,34 @@ describe('Write Files', () => {
 
     const { src, entry } = config;
     const filePath = `./${src}/${entry}`;
-    const output = writeFiles(config);
+    const output = writeStarterFile(config);
     const calls = writeFileSync.mock.calls[0];
 
     expect(calls).toEqual([
       filePath,
-      CONSTANTS.writeFiles.baseFunction(),
+      CONSTANTS.writeStarterFile.baseFunction(),
       { flag: 'wx' },
     ]);
-    expect(output).toEqual(CONSTANTS.writeFiles.msg.success(filePath));
+    expect(output).toEqual(CONSTANTS.writeStarterFile.msg.success(filePath));
   });
 
   it('should generate a react entry file', () => {
     format.mockImplementation((data) => data);
     config.entry = 'index.jsx';
     config.isReact = true;
+    config.isModule = true;
 
     const { src, entry } = config;
     const filePath = `./${src}/${entry}`;
-    const output = writeFiles(config);
+    const output = writeStarterFile(config);
     const calls = writeFileSync.mock.calls[0];
 
     expect(calls).toEqual([
       filePath,
-      CONSTANTS.writeFiles.reactFunction(),
+      CONSTANTS.writeStarterFile.reactFunction(),
       { flag: 'wx' },
     ]);
-    expect(output).toEqual(CONSTANTS.writeFiles.msg.success(filePath));
+    expect(output).toEqual(CONSTANTS.writeStarterFile.msg.success(filePath));
   });
 
   it('should generate a typescript entry file', () => {
@@ -175,15 +176,15 @@ describe('Write Files', () => {
 
     const { src, entry } = config;
     const filePath = `./${src}/${entry}`;
-    const output = writeFiles(config);
+    const output = writeStarterFile(config);
     const calls = writeFileSync.mock.calls[0];
 
     expect(calls).toEqual([
       filePath,
-      CONSTANTS.writeFiles.baseFunction(':boolean'),
+      CONSTANTS.writeStarterFile.baseFunction(':boolean'),
       { flag: 'wx' },
     ]);
-    expect(output).toEqual(CONSTANTS.writeFiles.msg.success(filePath));
+    expect(output).toEqual(CONSTANTS.writeStarterFile.msg.success(filePath));
   });
 
   it('should generate a react typescript entry file', () => {
@@ -191,18 +192,19 @@ describe('Write Files', () => {
     config.entry = 'index.tsx';
     config.isTypescript = true;
     config.isReact = true;
+    config.isModule = true;
 
     const { src, entry } = config;
     const filePath = `./${src}/${entry}`;
-    const output = writeFiles(config);
+    const output = writeStarterFile(config);
     const calls = writeFileSync.mock.calls[0];
 
     expect(calls).toEqual([
       filePath,
-      CONSTANTS.writeFiles.reactFunction(':React.ReactElement'),
+      CONSTANTS.writeStarterFile.reactFunction(': ReactElement'),
       { flag: 'wx' },
     ]);
-    expect(output).toEqual(CONSTANTS.writeFiles.msg.success(filePath));
+    expect(output).toEqual(CONSTANTS.writeStarterFile.msg.success(filePath));
   });
 
   it('should not overwrite existing entry files', () => {
@@ -213,8 +215,8 @@ describe('Write Files', () => {
       throw new Error();
     });
 
-    const output = writeFiles(config);
+    const output = writeStarterFile(config);
 
-    expect(output).toEqual(CONSTANTS.writeFiles.msg.fail(filePath));
+    expect(output).toEqual(CONSTANTS.writeStarterFile.msg.fail(filePath));
   });
 });
