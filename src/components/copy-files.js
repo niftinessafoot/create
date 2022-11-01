@@ -41,7 +41,7 @@ function generateReadme(config) {
   let message;
 
   try {
-    writeFileSync('./README.md', formattedContent, { flag: 'w' });
+    writeFileSync('./README.md', formattedContent, { flag: 'wX' });
     message = CONSTANTS.generateReadme.success;
   } catch (err) {
     message = formatWarning(CONSTANTS.generateReadme.fail);

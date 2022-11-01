@@ -1,5 +1,9 @@
 import { copyFileSync, writeFileSync, readdirSync } from 'fs';
-import { copyFiles, writeStarterFile } from '../src/components/copy-files.js';
+import {
+  copyFiles,
+  writeStarterFile,
+  generateReadme,
+} from '../src/components/copy-files.js';
 import { CONSTANTS } from '../src/constants.js';
 import { format } from 'prettier';
 
@@ -14,6 +18,9 @@ describe('Copy Files', () => {
       __dirname: '',
       msg: jest.fn((str, code) => false),
       fileList: jest.fn((data) => data),
+      isTypescript: false,
+      isModule: true,
+      isReact: false,
     };
   });
 
@@ -77,8 +84,8 @@ describe('Copy Files', () => {
   });
 
   describe('Prune files based on flags', () => {
+    // TODO: Consolidate files array and check for `contains` vs compare actual array.
     it('should omit site files when generating a module', () => {
-      config.isModule = true;
       const msgSpy = jest.spyOn(config, 'msg');
       const files = ['foo.txt', 'webpack.config.js', 'rollup.config.js'];
       const expected = ['./foo.txt', './rollup.config.js'];
@@ -104,11 +111,25 @@ describe('Copy Files', () => {
 
       expect(callArray).toEqual(expect.arrayContaining(expected));
     });
+
     it('should omit typescript files when generating non-ts files', () => {
-      config.isTypescript = false;
       const msgSpy = jest.spyOn(config, 'msg');
       const files = ['foo.txt', 'tsconfig.json'];
       const expected = ['./foo.txt'];
+
+      readdirSync.mockReturnValue(files);
+
+      const output = copyFiles(config);
+      const callArray = copyFileSync.mock.calls.map((arr) => arr[1]);
+
+      expect(callArray).toEqual(expect.arrayContaining(expected));
+    });
+
+    it('should copy typescript configs when generating typescript files', () => {
+      config.isTypescript = true;
+      const msgSpy = jest.spyOn(config, 'msg');
+      const files = ['foo.txt', 'tsconfig.json'];
+      const expected = ['./foo.txt', './tsconfig.json'];
 
       readdirSync.mockReturnValue(files);
 
@@ -131,6 +152,9 @@ describe('Write Starter File', () => {
       formatWarning: jest.fn((data) => data),
       src: 'src',
       entry: 'index.js',
+      isReact: false,
+      isModule: true,
+      isTypescript: false,
     };
   });
 
@@ -150,11 +174,10 @@ describe('Write Starter File', () => {
     expect(output).toEqual(CONSTANTS.writeStarterFile.msg.success(filePath));
   });
 
-  it('should generate a react entry file', () => {
+  it('should generate a react entry module file', () => {
     format.mockImplementation((data) => data);
     config.entry = 'index.jsx';
     config.isReact = true;
-    config.isModule = true;
 
     const { src, entry } = config;
     const filePath = `./${src}/${entry}`;
@@ -164,6 +187,25 @@ describe('Write Starter File', () => {
     expect(calls).toEqual([
       filePath,
       CONSTANTS.writeStarterFile.reactFunction(),
+      { flag: 'wx' },
+    ]);
+    expect(output).toEqual(CONSTANTS.writeStarterFile.msg.success(filePath));
+  });
+
+  it('should generate a react entry site file', () => {
+    format.mockImplementation((data) => data);
+    config.entry = 'index.jsx';
+    config.isReact = true;
+    config.isModule = false;
+
+    const { src, entry } = config;
+    const filePath = `./${src}/${entry}`;
+    const output = writeStarterFile(config);
+    const calls = writeFileSync.mock.calls[0];
+
+    expect(calls).toEqual([
+      filePath,
+      CONSTANTS.writeStarterFile.reactSiteFunction(),
       { flag: 'wx' },
     ]);
     expect(output).toEqual(CONSTANTS.writeStarterFile.msg.success(filePath));
@@ -192,7 +234,6 @@ describe('Write Starter File', () => {
     config.entry = 'index.tsx';
     config.isTypescript = true;
     config.isReact = true;
-    config.isModule = true;
 
     const { src, entry } = config;
     const filePath = `./${src}/${entry}`;
@@ -218,5 +259,43 @@ describe('Write Starter File', () => {
     const output = writeStarterFile(config);
 
     expect(output).toEqual(CONSTANTS.writeStarterFile.msg.fail(filePath));
+  });
+});
+
+describe('Generate Readme', () => {
+  let config = {};
+
+  beforeEach(() => {
+    config = {
+      name: 'readme-test',
+      description: 'Description',
+      __dirname: '',
+      msg: jest.fn((str, code) => false),
+      fileList: jest.fn((data) => data),
+      formatWarning: jest.fn((data) => data),
+      src: 'src',
+      entry: 'index.js',
+      isModule: true,
+      isReact: false,
+      isTypescript: false,
+    };
+  });
+
+  it('should generate a README.md', () => {
+    format.mockImplementation((data) => data);
+    const output = generateReadme(config);
+    const calls = writeFileSync.mock.calls;
+
+    expect(output).toEqual(CONSTANTS.generateReadme.success);
+  });
+
+  it('should not overwrite existing README', () => {
+    writeFileSync.mockImplementation(() => {
+      throw new Error();
+    });
+
+    const output = generateReadme(config);
+
+    expect(output).toEqual(CONSTANTS.generateReadme.fail);
   });
 });
