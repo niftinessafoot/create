@@ -147,8 +147,7 @@ async function init() {
   groupEnd();
 
   group(bold('🧱 Installing Dependencies'));
-  // const installOutput = await installDependencies(settings, dependencies);
-  const installOutput = 'skipping install';
+  const installOutput = await installDependencies(settings, dependencies);
   log(installOutput);
   log(_);
   groupEnd();

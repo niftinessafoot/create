@@ -10,6 +10,7 @@ function _buildScripts(config) {
     'test:coverage': 'jest --coverage',
     clean: `rm -f ${dist}/*`,
   };
+
   if (isTypescript) {
     defaultScripts.types = 'tsc';
   }
@@ -78,6 +79,7 @@ function generatePackageJson(config) {
 
   let existing = {};
   let existingMessage;
+  let errorMessage;
 
   if (existsSync('./package.json')) {
     msg(CONSTANTS.generatePackageJson.existsOne, 'warn');
@@ -103,8 +105,6 @@ function generatePackageJson(config) {
   const packageString = format(rawJson, {
     parser: 'json-stringify',
   });
-
-  let errorMessage;
 
   writeFileSync('./package.json', packageString, (err) => {
     errorMessage = formatError(err);
