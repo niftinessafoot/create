@@ -1,0 +1,58 @@
+{
+  "base": {
+    "prod": [],
+    "dev": [
+      "@babel/cli",
+      "@babel/core",
+      "@babel/preset-env",
+      "@babel/preset-react",
+      "@babel/preset-typescript",
+      "@rollup/plugin-babel",
+      "@testing-library/jest-dom",
+      "@testing-library/react",
+      "@types/jest",
+      "@typescript-eslint/eslint-plugin",
+      "@typescript-eslint/parser",
+      "eslint-config-prettier",
+      "eslint-plugin-react",
+      "eslint-plugin-tsdoc",
+      "eslint",
+      "jest-environment-jsdom",
+      "jest",
+      "prettier",
+      "rollup-plugin-terser",
+      "rollup",
+      "stylelint-config-prettier-scss",
+      "stylelint-config-standard-scss",
+      "stylelint",
+      "typedoc-plugin-markdown",
+      "typedoc",
+      "typescript"
+    ],
+    "peer": []
+  },
+  "react": {
+    "prod": [],
+    "dev": ["@types/react", "@types/react-dom", "react-test-renderer"],
+    "peer": ["react", "react-dom"]
+  },
+  "site": {
+    "prod": [],
+    "dev": [
+      "babel-loader",
+      "css-loader",
+      "dotenv-webpack",
+      "html-loader",
+      "html-webpack-plugin",
+      "mini-css-extract-plugin",
+      "sass-loader",
+      "sass",
+      "style-loader",
+      "webpack-cli",
+      "webpack-dev-server",
+      "yamljs",
+      "webpack"
+    ],
+    "peer": []
+  }
+}

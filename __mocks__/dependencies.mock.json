@@ -1,0 +1,17 @@
+{
+  "base": {
+    "prod": ["base"],
+    "dev": ["basedev"],
+    "peer": ["basepeer"]
+  },
+  "react": {
+    "prod": ["react"],
+    "dev": ["devreact"],
+    "peer": ["devpeer"]
+  },
+  "site": {
+    "prod": ["site"],
+    "dev": ["sitedev"],
+    "peer": ["sitepeer"]
+  }
+}
