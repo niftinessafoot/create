@@ -29,7 +29,6 @@ describe('Generate `package.json`', () => {
       type: 'module',
       scripts,
       browserslist: '',
-      files: '',
       repository: '',
     };
     settings = {
@@ -127,6 +126,7 @@ describe('Generate `package.json`', () => {
         keywords: ['module'],
         author: '',
         description: '',
+        files: '',
         license: '',
         version: '',
       });

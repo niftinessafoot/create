@@ -9,8 +9,11 @@
     "coverage": "jest --coverage"
   },
   "keywords": [],
-  "author": "",
+  "author": "Matthew Smiith <code@niftinessafoot.com>",
   "license": "MIT",
+  "files": [
+    "./src"
+  ],
   "dependencies": {
     "@babel/preset-env": "^7.19.4",
     "@babel/preset-typescript": "^7.18.6",

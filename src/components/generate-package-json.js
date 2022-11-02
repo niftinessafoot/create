@@ -60,14 +60,15 @@ function generatePackageJson(config) {
     license,
     scripts: _buildScripts(config),
     browserslist,
-    files,
     repository,
   };
 
   if (isModule) {
     packageJson.keywords.push('module');
     packageJson.type = type;
+    packageJson.files = files;
   }
+
   if (isReact) {
     packageJson.keywords.push('react');
   }
