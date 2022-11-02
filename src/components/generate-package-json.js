@@ -10,6 +10,7 @@ function _buildScripts(config) {
     'test:coverage': 'jest --coverage',
     clean: `rm -f ${dist}/*`,
   };
+
   if (isTypescript) {
     defaultScripts.types = 'tsc';
   }
@@ -59,14 +60,15 @@ function generatePackageJson(config) {
     license,
     scripts: _buildScripts(config),
     browserslist,
-    files,
     repository,
   };
 
   if (isModule) {
     packageJson.keywords.push('module');
     packageJson.type = type;
+    packageJson.files = files;
   }
+
   if (isReact) {
     packageJson.keywords.push('react');
   }
@@ -78,6 +80,7 @@ function generatePackageJson(config) {
 
   let existing = {};
   let existingMessage;
+  let errorMessage;
 
   if (existsSync('./package.json')) {
     msg(CONSTANTS.generatePackageJson.existsOne, 'warn');
@@ -103,8 +106,6 @@ function generatePackageJson(config) {
   const packageString = format(rawJson, {
     parser: 'json-stringify',
   });
-
-  let errorMessage;
 
   writeFileSync('./package.json', packageString, (err) => {
     errorMessage = formatError(err);

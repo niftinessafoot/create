@@ -1,4 +1,4 @@
-import { spawn } from 'cross-spawn'; // For longer-running, data-intense jobs.
+import { spawn } from 'child_process';
 import { CONSTANTS } from '../constants.js';
 //TODO: Pull problem package name to highlight.
 

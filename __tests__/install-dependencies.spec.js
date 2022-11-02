@@ -1,7 +1,7 @@
+import { spawn } from 'child_process';
 import { installDependencies } from '../src/components/install-dependencies.js';
 import config from '../__mocks__/config.mock.json';
-import dependencies from '../__mocks__/dependencies.mock.json';
-import { spawn } from 'child_process';
+import dependencies from '../__mocks__/dependencies.json';
 import { CONSTANTS } from '../src/constants.js';
 
 jest.mock('child_process');
