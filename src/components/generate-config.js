@@ -28,7 +28,7 @@ function generateConfig(config) {
     writeErr: (str) => process.stderr.write(formatError(str)),
   });
 
-  program.parse();
+  program.parse(process.argv);
 
   return Object.assign(config, program.opts());
 }
