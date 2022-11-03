@@ -1,6 +1,6 @@
 # Create-Project
 
-An npm initializer for generating Niftiness Afoot projects, modules, and sites.
+An npm initializer for generating _NiftinessAfoot!_ projects, modules, and sites.
 
 ## who’s this for?
 
