@@ -39,7 +39,8 @@ const msg = (message, code) => {
 const packageMeta = {
   name: '@afoot/module',
   version: '0.1.0',
-  author: 'Matthew Smith @niftinessafoot',
+  author:
+    'Matthew Smith <code@niftinessafoot.com> (https://www.niftinessafoot.com)',
   description: '',
   entry: 'index.ts',
   private: true,
