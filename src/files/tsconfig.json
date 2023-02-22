@@ -20,5 +20,5 @@
       "Components/*": ["src/components/*"]
     }
   },
-  "include": ["src/**/*"]
+  "exclude": ["node_modules", "coverage", "__mocks__", "__tests__"]
 }
