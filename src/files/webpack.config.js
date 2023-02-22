@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
+const { access, constants } = require('node:fs');
 const yaml = require('yamljs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -7,14 +8,21 @@ const isDev = process.env.NODE_ENV !== 'production';
 const glob = require('glob');
 
 const pages = Object.fromEntries(
-  glob.sync('./src/pages/**/*.tsx').map((file) => {
-    const key = file.split('/').pop().replace('.tsx', '');
+  glob.sync('./src/pages/**/*.{tsx,jsx}').map((file) => {
+    const key = file
+      .split('/')
+      .pop()
+      .replace(/\.(j|t)sx$/, '');
     return [key, file];
   })
 );
 
+const basePath = `./src`;
+const indexFile = access(`${basePath}/index.tsx`, constants.F_OK)
+  ? `${basePath}/index.tsx`
+  : `${basePath}/index.jsx`;
 const entries = {
-  index: './src/index.tsx',
+  index: indexFile,
   ...pages,
 };
 const addHTMLPages = (() => {
@@ -29,7 +37,7 @@ const addHTMLPages = (() => {
 
 module.exports = {
   devServer: {
-    static: './dist',
+    static: path.resolve(__dirname, 'dist'),
     hot: true,
   },
   devtool: 'inline-source-map',
