@@ -17,12 +17,25 @@ const pages = Object.fromEntries(
   })
 );
 
-const basePath = `./src`;
-const indexFile = access(`${basePath}/index.tsx`, constants.F_OK)
-  ? `${basePath}/index.tsx`
-  : `${basePath}/index.jsx`;
+const getIndexFile = (filename = 'index') => {
+  const root = `./src`;
+  const basePath = `${root}/${filename}`;
+  const js = `.jsx`;
+  const ts = `.tsx`;
+
+  let extension = ts;
+
+  try {
+    accessSync(`${basePath}${extension}`, constants.F_OK);
+  } catch (err) {
+    extension = js;
+  }
+
+  return `${basePath}${extension}`;
+};
+
 const entries = {
-  index: indexFile,
+  index: getIndexFile(),
   ...pages,
 };
 const addHTMLPages = (() => {
@@ -105,7 +118,7 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.(txt|json)$/i,
+        test: /\.(txt|json|md)$/i,
         type: 'asset/source',
         exclude: /node_modules/,
       },
