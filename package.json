@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "bin": "./src/index.js",
   "scripts": {
+    "build:prod": "echo nothing to build",
     "test": "jest",
     "coverage": "jest --coverage"
   },
