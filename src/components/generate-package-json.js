@@ -19,8 +19,8 @@ function _buildScripts(config) {
     const siteScripts = {
       build: 'webpack --node-env production',
       dev: 'webpack -w',
-      start: 'webpack serve --open',
-      'start:prod': 'webpack serve --open --node-env production',
+      start: 'webpack serve',
+      'start:prod': 'webpack serve --node-env production',
     };
 
     Object.assign(defaultScripts, siteScripts);

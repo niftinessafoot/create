@@ -17,7 +17,9 @@
     "resolveJsonModule": true,
     "baseUrl": "./",
     "paths": {
-      "Components/*": ["src/components/*"]
+      "@components/*": ["src/components/*"],
+      "@styles/*": ["src/styles/*"],
+      "@pages/*": ["src/pages/*"]
     }
   },
   "exclude": ["node_modules", "coverage", "__mocks__", "__tests__"]

@@ -33,7 +33,13 @@
   },
   "react": {
     "prod": [],
-    "dev": ["@types/react", "@types/react-dom", "react-test-renderer"],
+    "dev": [
+      "@types/react",
+      "@types/react-dom",
+      "react-test-renderer",
+      "react-markdown",
+      "rehype-raw"
+    ],
     "peer": ["react", "react-dom"]
   },
   "site": {
