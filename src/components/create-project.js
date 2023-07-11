@@ -39,21 +39,22 @@ const msg = (message, code) => {
 const packageMeta = {
   name: '@afoot/module',
   version: '0.1.0',
-  author:
-    'Matthew Smith <code@niftinessafoot.com> (https://www.niftinessafoot.com)',
   description: '',
-  entry: 'index.ts',
-  private: true,
   keywords: [],
-  license: 'MIT',
-  type: 'module',
-  browserslist: ['defaults'],
-  files: [],
+  homepage: 'https://github.com/niftinessafoot/',
+  bugs: 'https://github.com/niftinessafoot/',
   repository: {
     type: 'git',
     url: 'https://github.com/niftinessafoot/',
   },
-  homepage: 'https://github.com/niftinessafoot/',
+  license: 'MIT',
+  author:
+    'Matthew Smith <code@niftinessafoot.com> (https://www.niftinessafoot.com)',
+  entry: 'index.ts',
+  private: true,
+  type: 'module',
+  browserslist: ['defaults'],
+  files: ['dist/'],
 };
 const internalConfig = {
   __dirname,

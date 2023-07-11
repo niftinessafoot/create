@@ -1,6 +1,7 @@
 import { writeFileSync, readFileSync, access, existsSync } from 'fs';
 import { format } from 'prettier';
 import { CONSTANTS } from '../constants.js';
+import { types, main, module, exports } from '../export-paths.js';
 
 function _buildScripts(config) {
   const { scripts, entry, src, dist, isTypescript, isModule } = config;
@@ -50,23 +51,33 @@ function generatePackageJson(config) {
     fileList,
     dist,
   } = config;
+
   const packageJson = {
     name,
     version,
     description,
     author,
     keywords,
-    entry,
     license,
+    entry,
+    types,
+    main,
+    module,
+    exports,
     scripts: _buildScripts(config),
     browserslist,
     repository,
+    homepage,
+    bugs,
   };
 
   if (isModule) {
     packageJson.keywords.push('module');
     packageJson.type = type;
     packageJson.files = files;
+    packageJson.main = main;
+    packageJson.module = module;
+    packageJson.exports = exports;
   }
 
   if (isReact) {
@@ -75,7 +86,7 @@ function generatePackageJson(config) {
 
   if (isTypescript) {
     packageJson.keywords.push('typescript');
-    packageJson.types = `${dist}/types/index.d.ts`;
+    packageJson.types = types;
   }
 
   let existing = {};
