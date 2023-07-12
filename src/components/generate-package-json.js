@@ -16,6 +16,20 @@ function _buildScripts(config) {
     defaultScripts.types = 'tsc';
   }
 
+  if (isModule) {
+    const moduleScripts = {
+      prebuild: 'npm run clean',
+      'build:prod': 'npm run build && npm run types',
+      'build:dev': `rollup -c rollup.config.dev.js -i ${src}/${entry}`,
+      prepack: 'npm run build:prod && npm run prep:umd',
+      docs: 'typedoc',
+      'prep:umd': 'node ./lib/init-umd-config.js',
+      watch: 'nodemon --exec "npm run build:dev" --watch src/ -e ts,js',
+    };
+
+    Object.assign(defaultScripts, moduleScripts);
+  }
+
   if (!isModule) {
     const siteScripts = {
       build: 'webpack --node-env production',

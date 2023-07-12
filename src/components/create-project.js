@@ -97,6 +97,10 @@ Object.defineProperty(config, 'isModule', {
   }.bind(config),
 });
 
+// TODO: Ensure `files/lib/*` copies over to new projects.
+// TODO: Ensure `.github/**/*` copies over to new projects.
+// TODO: Initialize .git repository.
+
 /** Initializer. Calls out separated methods. */
 async function init() {
   clear();
