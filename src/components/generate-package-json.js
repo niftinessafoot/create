@@ -59,6 +59,8 @@ function generatePackageJson(config) {
     type,
     browserslist,
     files,
+    homepage,
+    bugs,
     repository,
     formatError,
     msg,
@@ -72,24 +74,21 @@ function generatePackageJson(config) {
     description,
     author,
     keywords,
-    license,
-    entry,
-    types,
-    main,
-    module,
-    exports,
-    scripts: _buildScripts(config),
-    browserslist,
     repository,
     homepage,
     bugs,
+    license,
+    types,
+    module,
+    scripts: _buildScripts(config),
+    browserslist,
   };
 
   if (isModule) {
     packageJson.keywords.push('module');
     packageJson.type = type;
     packageJson.files = files;
-    packageJson.main = main;
+    packageJson.main = `./"${dist}"`;
     packageJson.module = module;
     packageJson.exports = exports;
   }

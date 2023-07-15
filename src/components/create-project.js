@@ -50,7 +50,6 @@ const packageMeta = {
   license: 'MIT',
   author:
     'Matthew Smith <code@niftinessafoot.com> (https://www.niftinessafoot.com)',
-  entry: 'index.ts',
   private: true,
   type: 'module',
   browserslist: ['defaults'],
@@ -100,6 +99,7 @@ Object.defineProperty(config, 'isModule', {
 // TODO: Ensure `files/lib/*` copies over to new projects.
 // TODO: Ensure `.github/**/*` copies over to new projects.
 // TODO: Initialize .git repository.
+// TODO: Update package.json URLS with correct project name
 
 /** Initializer. Calls out separated methods. */
 async function init() {
