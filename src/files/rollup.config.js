@@ -5,7 +5,7 @@ import { _C } from './constants';
 const extensions = ['.js', '.jsx', '.ts', '.tsx'];
 
 export default {
-  output: {
+  output: [
     {
       // TypeScript and React Transpiled IIFE/CJS (UMD)
       // Bundle-ready. Assumed will be transpiled on future builds.
