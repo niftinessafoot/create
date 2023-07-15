@@ -18,7 +18,7 @@ function _buildScripts(config) {
 
   if (isModule) {
     const moduleScripts = {
-      prebuild: 'npm run clean',
+      'prebuild:prod': 'npm run clean',
       'build:prod': 'npm run build && npm run types',
       'build:dev': `rollup -c rollup.config.dev.js -i ${src}/${entry}`,
       prepack: 'npm run build:prod && npm run prep:umd',
@@ -52,7 +52,6 @@ function generatePackageJson(config) {
     author,
     keywords,
     license,
-    entry,
     isReact,
     isTypescript,
     isModule,
