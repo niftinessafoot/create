@@ -1,18 +1,18 @@
-export const types = `${dist}/types/index.d.ts`;
-export const main = `${dist}/umd/index.js`;
-export const module = `${dist}/umd/index.js`;
+export const types = `/types/index.d.ts`;
+export const main = `/umd/index.js`;
+export const module = `/umd/index.js`;
 export const exports = {
   '.': {
-    types: `./${dist}/types/index.d.ts`,
-    require: `./${dist}/umd/index.js`,
-    import: `./${dist}/esm/index.js`,
-    default: `./${dist}/umd/index.js`,
+    types: `./types/index.d.ts`,
+    require: `./umd/index.js`,
+    import: `./esm/index.js`,
+    default: `./umd/index.js`,
   },
   './standalone': {
-    types: `./${dist}/types/index.d.ts`,
-    require: `./${dist}/umd/standalone.js`,
-    import: `./${dist}/esm/standalone.js`,
-    default: `./${dist}/umd/legacy.js`,
+    types: `./types/index.d.ts`,
+    require: `./umd/standalone.js`,
+    import: `./esm/standalone.js`,
+    default: `./umd/legacy.js`,
   },
-  './legacy': `./${dist}/umd/legacy.js`,
+  './legacy': `./umd/legacy.js`,
 };

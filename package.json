@@ -42,6 +42,6 @@
     }
   },
   "jest": {
-    "preset": "./src/files/jest.config.json"
+    "preset": "./src/files/jest.config.js"
   }
 }

@@ -86,10 +86,17 @@ function generatePackageJson(config) {
   if (isModule) {
     packageJson.keywords.push('module');
     packageJson.type = type;
-    packageJson.files = files;
-    packageJson.main = `./"${dist}"`;
-    packageJson.module = module;
-    packageJson.exports = exports;
+    packageJson.files = `./${dist}${files}`;
+    packageJson.main = `./${dist}${main}`;
+    packageJson.module = `./${dist}${module}`;
+    packageJson.exports = {
+      '.': {
+        types: '',
+        require: '',
+        import: '',
+        default: '',
+      },
+    };
   }
 
   if (isReact) {
