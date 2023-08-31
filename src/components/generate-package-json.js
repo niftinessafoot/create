@@ -1,14 +1,14 @@
 import { writeFileSync, readFileSync, existsSync } from 'fs';
 import { format } from 'prettier';
 import { CONSTANTS } from '../constants.js';
-// import { types, main, module, exports } from '../export-paths.js';
 
 const typesPath = `./types/index.d.ts`;
 
 function _buildExports(config) {
-  const { scripts, entry, src, dist, isTypescript, isModule } = config;
+  const { dist, isTypescript } = config;
   const output = {};
 
+  // TODO: Add export values.
   const exports = {
     '.': {
       require: '',
@@ -74,7 +74,6 @@ function generatePackageJson(config) {
     isReact,
     isTypescript,
     isModule,
-    formatError,
     msg,
     fileList,
     dist,

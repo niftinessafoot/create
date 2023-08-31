@@ -1,11 +1,9 @@
 import { jest } from '@jest/globals';
 import { CONSTANTS } from '../src/constants';
-import { types, main, module, exports } from '../src/export-paths.js';
 import {
   expectedModuleJson,
   expectedSiteJson,
   expectedModuleReactJson,
-  expectedModuleReactTypescriptJson,
   expectedModuleTypescriptJson,
 } from './expected-output.js';
 

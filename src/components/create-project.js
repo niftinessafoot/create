@@ -62,7 +62,6 @@ const baseConfig = {
 // TODO: Ensure `files/lib/*` copies over to new projects.
 // TODO: Ensure `.github/**/*` copies over to new projects.
 // TODO: Initialize .git repository.
-// TODO: Update package.json URLS with correct project name
 
 /** Initializer. Calls out separated methods. */
 async function init() {
@@ -97,8 +96,6 @@ async function init() {
   log(_);
   groupEnd();
 
-  return true;
-
   /**
    * Section: Subdirectories
    * @remarks
@@ -122,6 +119,8 @@ async function init() {
   log(readmeOutput);
   log(_);
   groupEnd();
+
+  return true;
 
   group(bold('🧱 Installing Dependencies'));
   const installOutput = await installDependencies(settings, dependencies);

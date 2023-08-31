@@ -1,7 +1,15 @@
-import { mkdirSync } from 'fs';
-import { generateDirectories } from '../src/components/generate-directories.js';
+import { jest } from '@jest/globals';
+import { CONSTANTS } from '../src/constants';
 
-jest.mock('fs');
+jest.unstable_mockModule('fs', () => {
+  return import('../__mocks__/fs');
+});
+
+const fs = await import('fs');
+const { generateConfig } = await import('../src/components/generate-config');
+const { generateDirectories } = await import(
+  '../src/components/generate-directories.js'
+);
 
 describe('Generate Directories', () => {
   let settings = {};
@@ -24,7 +32,7 @@ describe('Generate Directories', () => {
   it('should generate base directories', () => {
     generateDirectories(settings);
 
-    const mockCalls = mkdirSync.mock.calls;
+    const mockCalls = fs.mkdirSync.mock.calls;
     const expectedOutput = generateExpectedOutput(settings.directories);
 
     expect(mockCalls).toEqual(expectedOutput);
@@ -34,7 +42,7 @@ describe('Generate Directories', () => {
     settings.isReact = true;
     generateDirectories(settings);
 
-    const mockCalls = mkdirSync.mock.calls;
+    const mockCalls = fs.mkdirSync.mock.calls;
     const expectedOutput = generateExpectedOutput([
       ...settings.directories,
       ...settings.reactDirectories,
@@ -47,7 +55,7 @@ describe('Generate Directories', () => {
     settings.type = 'site';
     generateDirectories(settings);
 
-    const mockCalls = mkdirSync.mock.calls;
+    const mockCalls = fs.mkdirSync.mock.calls;
     const expectedOutput = generateExpectedOutput([
       ...settings.directories,
       ...settings.siteDirectories,
@@ -61,7 +69,7 @@ describe('Generate Directories', () => {
     settings.type = 'site';
     generateDirectories(settings);
 
-    const mockCalls = mkdirSync.mock.calls;
+    const mockCalls = fs.mkdirSync.mock.calls;
     const expectedOutput = generateExpectedOutput([
       ...settings.directories,
       ...settings.siteDirectories,
