@@ -7,7 +7,7 @@
   "scripts": {
     "build:prod": "echo nothing to build",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "coverage": "jest --coverage"
+    "coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage"
   },
   "keywords": [],
   "author": "Matthew Smiith <code@niftinessafoot.com>",

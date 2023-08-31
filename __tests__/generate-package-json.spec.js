@@ -5,7 +5,7 @@ import {
   expectedSiteJson,
   expectedModuleReactJson,
   expectedModuleTypescriptJson,
-} from './expected-output.js';
+} from '../__mocks__/expected-output';
 
 jest.unstable_mockModule('fs', () => {
   return import('../__mocks__/fs');

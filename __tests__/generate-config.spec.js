@@ -33,11 +33,13 @@ describe('Generate Config', () => {
       'userEntry'
     );
     const expectedOutput = {
-      name: '@afoot/projectName',
+      name: 'projectName',
       src: 'userSrc',
       dist: 'userDist',
       entry: 'userEntry',
       isModule: false,
+      isReact: false,
+      isTypescript: false,
     };
     const settings = generateConfig(config);
 
