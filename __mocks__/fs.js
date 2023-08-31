@@ -1,4 +1,5 @@
-const fs = jest.genMockFromModule('fs');
+import { jest } from '@jest/globals';
+const fs = jest.createMockFromModule('fs');
 
 export const {
   constants,
