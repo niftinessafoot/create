@@ -1,12 +1,12 @@
 {
   "name": "@afoot/create-project",
-  "version": "0.2.3",
-  "description": "",
+  "version": "0.2.4",
+  "description": "NPM initializer for @afoot projects",
   "main": "src/index.js",
   "bin": "./src/index.js",
   "scripts": {
     "build:prod": "echo nothing to build",
-    "test": "jest",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "coverage": "jest --coverage"
   },
   "keywords": [],
@@ -17,7 +17,7 @@
   ],
   "dependencies": {
     "chalk": "^4.0.0",
-    "commander": "^9.4.1",
+    "minimist": "^1.2.8",
     "prettier": "^2.7.1"
   },
   "devDependencies": {

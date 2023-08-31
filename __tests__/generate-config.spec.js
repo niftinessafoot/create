@@ -5,7 +5,7 @@ const config = {
   src: 'defaultSrc',
   dist: 'defaultDist',
   entry: 'defaultEntry',
-  type: 'module',
+  isModule: true,
 };
 
 describe('Generate Config', () => {
@@ -24,7 +24,7 @@ describe('Generate Config', () => {
       '-t',
       'site',
       '-n',
-      'userName',
+      'projectName',
       '-s',
       'userSrc',
       '-d',
@@ -33,27 +33,14 @@ describe('Generate Config', () => {
       'userEntry'
     );
     const expectedOutput = {
-      name: 'userName',
+      name: '@afoot/projectName',
       src: 'userSrc',
       dist: 'userDist',
       entry: 'userEntry',
-      type: 'site',
+      isModule: false,
     };
     const settings = generateConfig(config);
 
     expect(settings).toEqual(expectedOutput);
-  });
-
-  it('should reject invalid types', () => {
-    jest.spyOn(process, 'exit').mockImplementation((errorCode) => errorCode);
-    config.formatError = (err) => {
-      return err;
-    };
-
-    process.argv.push('-t', 'failure');
-
-    expect(() => {
-      generateConfig(config);
-    }).toThrow('Allowed choices are module, site.');
   });
 });

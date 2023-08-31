@@ -8,10 +8,12 @@ import { generateDirectories } from './generate-directories.js';
 import { generatePackageJson } from './generate-package-json.js';
 import { copyFiles, generateReadme, writeStarterFile } from './copy-files.js';
 import { installDependencies } from './install-dependencies.js';
+import minimist from 'minimist';
 
 const formatError = (err) => `🚨  ${red(err)}`;
 const formatWarning = (warn) => `⚠️  ${yellow(warn)}`;
 const fileList = (arr) => arr.map((ele) => `  • ${green(ele)}`).join('\n');
+// TODO: Move message formatting out into separate component.
 
 const { log, dir, group, groupEnd, clear } = console;
 const { green, red, yellow, cyan, bold, dim } = chalk;
@@ -36,25 +38,7 @@ const msg = (message, code) => {
 /**
  * Configuration object. Inherits overrides from {#link program}
  */
-const packageMeta = {
-  name: '@afoot/module',
-  version: '0.1.0',
-  description: '',
-  keywords: [],
-  homepage: 'https://github.com/niftinessafoot/',
-  bugs: 'https://github.com/niftinessafoot/',
-  repository: {
-    type: 'git',
-    url: 'https://github.com/niftinessafoot/',
-  },
-  license: 'MIT',
-  author:
-    'Matthew Smith <code@niftinessafoot.com> (https://www.niftinessafoot.com)',
-  private: true,
-  type: 'module',
-  browserslist: ['defaults'],
-  files: ['dist/'],
-};
+
 const internalConfig = {
   __dirname,
   __filename,
@@ -63,38 +47,17 @@ const internalConfig = {
   formatWarning,
   fileList,
 };
-const config = {
-  src: 'src',
-  dist: 'dist',
+const baseConfig = {
+  src: './src',
+  dist: './dist',
+  entry: 'index.js',
+  scope: '@afoot',
+  isModule: true,
   directories: ['__tests__', 'src'],
   siteDirectories: ['functions', 'src/js', 'src/styles', 'src/pages'],
   reactDirectories: ['src/components'],
-  ...packageMeta,
   ...internalConfig,
 };
-
-/* Because the getters are used in other files, they need to be bound to `config`—they lose `this` on import.*/
-Object.defineProperty(config, 'isReact', {
-  get: function () {
-    const reg = /(j|t)sx/;
-    const str = this.entry?.split('.').pop();
-    return reg.test(str);
-  }.bind(config),
-});
-
-Object.defineProperty(config, 'isTypescript', {
-  get: function () {
-    const reg = /tsx?/;
-    const str = this.entry?.split('.').pop();
-    return reg.test(str);
-  }.bind(config),
-});
-
-Object.defineProperty(config, 'isModule', {
-  get: function () {
-    return this.type === 'module';
-  }.bind(config),
-});
 
 // TODO: Ensure `files/lib/*` copies over to new projects.
 // TODO: Ensure `.github/**/*` copies over to new projects.
@@ -113,14 +76,28 @@ async function init() {
   /**
    * Section: Generating configuration.
    * @remarks
-   * Builds config object using defaults from {@link config} and inputs passed into the `npx` call.
+   * Builds config object using defaults from {@link baseConfig} and inputs passed into the `npx` call.
    */
-  const settings = generateConfig(config);
+  const settings = generateConfig(baseConfig);
 
   log('Building with the following params:');
-  dir(packageMeta);
+  const displayConfigs = minimist(process.argv.slice(2));
+  delete displayConfigs['_'];
+
+  dir(displayConfigs);
   log(_);
   groupEnd();
+
+  /**
+   * Section: Generate package.json
+   */
+  group(bold(`📝  Initializing NPM project for ${cyan(settings.name)}`));
+  const packageOutput = generatePackageJson(settings);
+  log(packageOutput);
+  log(_);
+  groupEnd();
+
+  return true;
 
   /**
    * Section: Subdirectories
@@ -130,12 +107,6 @@ async function init() {
   group(bold(`📂  Generating directories`));
   const directoryOutput = await generateDirectories(settings);
   log(fileList(directoryOutput));
-  log(_);
-  groupEnd();
-
-  group(bold(`📝  Initializing NPM project for ${cyan(settings.name)}`));
-  const packageOutput = generatePackageJson(settings);
-  log(packageOutput);
   log(_);
   groupEnd();
 

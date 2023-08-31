@@ -1,5 +1,20 @@
-import { Command, Option } from 'commander';
-const program = new Command();
+import minimist from 'minimist';
+
+const _getIsReact = (filename) => {
+  const reg = /(j|t)sx/;
+  const str = filename?.split('.').pop();
+  return reg.test(str);
+};
+
+const _getIsTypescript = (filename) => {
+  const reg = /tsx?/;
+  const str = filename?.split('.').pop();
+  return reg.test(str);
+};
+
+const _getIsModule = (type) => {
+  return type !== 'site';
+};
 
 /**
  *
@@ -7,30 +22,35 @@ const program = new Command();
  * @returns {Object} Modified config object.
  */
 function generateConfig(config) {
-  const { formatError } = config;
+  const args = minimist(process.argv.slice(2));
+  const overrides = {};
 
-  program.description('Bootstrap a module, React component, or website.');
-  program.option('-n, --name <name>', 'project name', config.name);
-  program.option('-s, --src <src>', 'source directory', config.src);
-  program.option('-d, --dist <dist>', 'build directory', config.dist);
-  program.option('-e, --entry <entry>', 'entry point filename', config.entry);
-  program.addOption(
-    new Option('-t, --type <type>', 'project type', config.type).choices([
-      'module',
-      'site',
-    ])
-  );
+  const keyMap = {
+    name: ['n', 'name'],
+    dist: ['d', 'dist'],
+    src: ['s', 'src'],
+    entry: ['e', 'entry'],
+    isModule: ['t', 'type', (value) => _getIsModule(value)],
+  };
 
-  program.configureOutput({
-    outputError: (str, write) => {
-      write(str);
-    },
-    writeErr: (str) => process.stderr.write(formatError(str)),
+  Object.keys(keyMap).forEach((key, index) => {
+    const [short, long, transformer] = keyMap[key];
+    const value = args[short] || args[long];
+    const hasTransformer = typeof transformer === 'function';
+
+    if (value) {
+      const output = hasTransformer ? transformer.call(null, value) : value;
+
+      overrides[key] = output;
+    }
   });
 
-  program.parse(process.argv);
+  const output = Object.assign(config, overrides);
 
-  return Object.assign(config, program.opts());
+  output['isReact'] = _getIsReact(output.entry);
+  output['isTypescript'] = _getIsTypescript(output.entry);
+
+  return output;
 }
 
 export { generateConfig };
