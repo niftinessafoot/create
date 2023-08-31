@@ -1,5 +1,5 @@
 {
-  "name": "@afoot/create-project",
+  "name": "@afoot/create",
   "version": "0.2.5",
   "description": "NPM initializer for @afoot projects",
   "main": "src/index.js",
