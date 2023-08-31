@@ -1,10 +1,16 @@
-import { spawn } from 'child_process';
-import { installDependencies } from '../src/components/install-dependencies.js';
+import { jest } from '@jest/globals';
+import { CONSTANTS } from '../src/constants.js';
 import config from '../__mocks__/config.mock.json';
 import dependencies from '../__mocks__/dependencies.json';
-import { CONSTANTS } from '../src/constants.js';
 
-jest.mock('child_process');
+jest.unstable_mockModule('child_process', () => {
+  return import('../__mocks__/child_process');
+});
+
+const { spawn } = await import('child_process');
+const { installDependencies } = await import(
+  '../src/components/install-dependencies.js'
+);
 
 const emptyDependencies = {
   prod: [],

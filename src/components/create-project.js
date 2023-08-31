@@ -120,8 +120,6 @@ async function init() {
   log(_);
   groupEnd();
 
-  return true;
-
   group(bold('🧱 Installing Dependencies'));
   const installOutput = await installDependencies(settings, dependencies);
   log(installOutput);
