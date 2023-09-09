@@ -8,12 +8,11 @@ function _buildExports(config) {
   const { dist, isTypescript } = config;
   const output = {};
 
-  // TODO: Add export values.
   const exports = {
     '.': {
-      require: '',
-      import: '',
-      default: '',
+      require: `${dist}/umd/index.js`,
+      import: `${dist}/esm/index.js`,
+      default: `${dist}/umd/index.js`,
     },
   };
 
