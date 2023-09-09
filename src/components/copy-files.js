@@ -20,7 +20,6 @@ function writeStarterFile(config) {
   const { src, entry, isReact, isTypescript, isModule, msg, formatWarning } =
     config;
   const filePath = `./${src}/${entry}`;
-  let message;
   let returnType = isTypescript ? ':boolean' : '';
 
   msg(CONSTANTS.writeStarterFile.msg.init(filePath));
@@ -35,37 +34,45 @@ function writeStarterFile(config) {
     }
   }
 
-  const formattedContent = format(rawContent, { parser: 'babel-ts' });
+  const content = format(rawContent, { parser: 'babel-ts' });
+
+  let outputMessage;
 
   try {
-    writeFileSync(filePath, formattedContent, { flag: 'wx' });
-    message = CONSTANTS.writeStarterFile.msg.success(filePath);
+    writeFileSync(filePath, content, { flag: 'wx' });
+    outputMessage = CONSTANTS.writeStarterFile.msg.success(filePath);
   } catch (err) {
-    message = formatWarning(CONSTANTS.writeStarterFile.msg.fail(filePath));
+    outputMessage = formatWarning(
+      CONSTANTS.writeStarterFile.msg.fail(filePath)
+    );
   }
 
-  return message;
+  return outputMessage;
 }
 
 function generateReadme(config) {
   const { name, description, formatWarning } = config;
 
-  const rawContent = CONSTANTS.generateReadme.content(name, description);
-  const formattedContent = format(rawContent, { parser: 'markdown' });
+  const contentArray = [
+    `# ${name}`,
+    description,
+    ...CONSTANTS.generateReadme.content,
+  ].join('/n');
+  const content = format(contentArray, { parser: 'markdown' });
 
-  let message;
+  let outpuMessage;
 
   try {
-    writeFileSync('./README.md', formattedContent, { flag: 'wx' });
-    message = CONSTANTS.generateReadme.success;
+    writeFileSync('./README.md', content, { flag: 'wx' });
+    outpuMessage = CONSTANTS.generateReadme.success;
   } catch (err) {
-    message = formatWarning(CONSTANTS.generateReadme.fail);
+    outpuMessage = formatWarning(CONSTANTS.generateReadme.fail);
   }
 
-  return message;
+  return outpuMessage;
 }
 
-function generateDisallowList(config) {
+function _generateDisallowList(config) {
   const { isModule, isTypescript } = config;
   const moduleDisallow = ['webpack.config.js', 'webpack.template.html'];
   const siteDisallow = [
@@ -91,9 +98,9 @@ function generateDisallowList(config) {
 }
 
 function copyFiles(config) {
-  const { _root, _srcRoot, msg, fileList, isModule, isTypescript } = config;
+  const { _srcRoot, msg, fileList, isModule, isTypescript } = config;
   const fileRoot = `${_srcRoot}/files`;
-  const disallowList = generateDisallowList(config);
+  const disallowList = _generateDisallowList(config);
   const copiedFiles = [];
 
   function parseFiles(current, prev) {
@@ -104,7 +111,7 @@ function copyFiles(config) {
       files.forEach((file) => {
         const filePath = [prev, current, file].filter(Boolean).join('/');
         const source = `${fileRoot}/${filePath}`;
-        const output = `${_root}/${filePath}`;
+        const output = `./${filePath}`;
         const isDirectory = statSync(source).isDirectory();
 
         if (disallowList.includes(filePath)) {

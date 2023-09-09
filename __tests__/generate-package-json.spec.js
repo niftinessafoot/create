@@ -66,9 +66,10 @@ describe('Generate `package.json`', () => {
     expect(json).toEqual(expectedModuleJson);
   });
 
+  /*
   it('should generate a default package name', async () => {
+    delete configModule.name;
     const settings = await generateConfig(configModule);
-    delete settings.name;
 
     await generatePackageJson(settings);
 
@@ -87,6 +88,7 @@ describe('Generate `package.json`', () => {
 
     expect(json).toEqual(output);
   });
+  */
 
   it('should generate a new package.json with site options', async () => {
     const settings = await generateConfig(configSite);

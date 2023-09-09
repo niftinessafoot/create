@@ -18,9 +18,6 @@ const fileList = (arr) => arr.map((ele) => `  • ${green(ele)}`).join('\n');
 const { log, dir, group, groupEnd, clear } = console;
 const { green, red, yellow, cyan, bold, dim } = chalk;
 const _ = `\n`;
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const _root = process.cwd();
 
 const msg = (message, code) => {
   const { log, error, warn } = console;
@@ -42,9 +39,6 @@ const msg = (message, code) => {
  */
 
 const internalConfig = {
-  __dirname,
-  __filename,
-  _root,
   msg,
   formatError,
   formatWarning,
@@ -74,7 +68,7 @@ async function init(_srcRoot) {
     throw new Error('No source root specified.');
   }
 
-  if (_srcRoot === `${_root}/src`) {
+  if (_srcRoot === `${process.cwd()}/src`) {
     throw new Error('Do not run create on itself.');
   }
 

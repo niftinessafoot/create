@@ -14,7 +14,7 @@ Really, [me](https://github.com/niftinessafoot). Feel free to use it if you wann
 Okay. If you insist.
 
 ```bash
-npm init @afoot <flags>
+npm init @afoot -- <flags>
 ```
 
 with the following flags:
@@ -25,7 +25,7 @@ with the following flags:
 
 ## license
 
-[MIT](./LICENSE) © [Matthew Smith](http://www.niftinessafoot.com)
+[MIT](./LICENSE) © [Matthew Smith](https://www.niftinessafoot.com)
 
 ## made with ❤️ and ☕️ by
 

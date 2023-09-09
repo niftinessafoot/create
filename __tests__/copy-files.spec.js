@@ -9,6 +9,8 @@ jest.unstable_mockModule('prettier', () => {
   return { format: jest.fn() };
 });
 
+// TODO: `copy-files` needs testing overhaul after refactor.
+
 const { readdirSync, writeFileSync, copyFileSync } = await import('fs');
 const { format } = await import('prettier');
 
