@@ -20,6 +20,8 @@ const { green, red, yellow, cyan, bold, dim } = chalk;
 const _ = `\n`;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const _root = process.cwd();
+
 const msg = (message, code) => {
   const { log, error, warn } = console;
 
@@ -42,16 +44,19 @@ const msg = (message, code) => {
 const internalConfig = {
   __dirname,
   __filename,
+  _root,
   msg,
   formatError,
   formatWarning,
   fileList,
 };
 const baseConfig = {
+  scope: '@afoot',
+  name: 'module',
+  description: '',
   src: './src',
   dist: './dist',
   entry: 'index.js',
-  scope: '@afoot',
   isModule: true,
   directories: ['__tests__', 'src'],
   siteDirectories: ['functions', 'src/js', 'src/styles', 'src/pages'],
@@ -59,13 +64,19 @@ const baseConfig = {
   ...internalConfig,
 };
 
-// TODO: Ensure `files/lib/*` copies over to new projects.
-// TODO: Ensure `.github/**/*` copies over to new projects.
 // TODO: Initialize .git repository.
 
 /** Initializer. Calls out separated methods. */
-async function init() {
+async function init(_srcRoot) {
   clear();
+
+  if (!_srcRoot) {
+    throw new Error('No source root specified.');
+  }
+
+  if (_srcRoot === `${_root}/src`) {
+    throw new Error('Do not run create on itself.');
+  }
 
   /* Generate Config */
   log(_);
@@ -77,6 +88,7 @@ async function init() {
    * @remarks
    * Builds config object using defaults from {@link baseConfig} and inputs passed into the `npx` call.
    */
+  baseConfig['_srcRoot'] = _srcRoot;
   const settings = generateConfig(baseConfig);
 
   log('Building with the following params:');
@@ -121,8 +133,8 @@ async function init() {
   groupEnd();
 
   group(bold('🧱 Installing Dependencies'));
-  const installOutput = await installDependencies(settings, dependencies);
-  log(installOutput);
+  // const installOutput = await installDependencies(settings, dependencies);
+  // log(installOutput);
   log(_);
   groupEnd();
 

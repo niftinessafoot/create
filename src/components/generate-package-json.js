@@ -69,7 +69,7 @@ function _buildScripts(config) {
 
 function generatePackageJson(config) {
   const {
-    name = 'module',
+    name,
     scope,
     isReact,
     isTypescript,

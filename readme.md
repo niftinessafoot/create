@@ -1,4 +1,4 @@
-# Create-Project
+# Create
 
 An npm initializer for generating _NiftinessAfoot!_ projects, modules, and sites.
 
@@ -7,14 +7,14 @@ An npm initializer for generating _NiftinessAfoot!_ projects, modules, and sites
 Really, [me](https://github.com/niftinessafoot). Feel free to use it if you wanna, too. But take heed:
 
 1. This is super-duper-über beta. And probably always will be.
-2. I tweak and tinker like Han Solo on the _Millennium Falcon_. Don’t count on any libnrary or config being here from day-to-day. Sure, I’ll SemVer all this, but seriously—go use Create React App or something.
+2. I tweak and tinker like Han Solo on the _Millennium Falcon_. Don’t count on any library or config being here from day-to-day. Sure, I’ll SemVer all this, but seriously—go use _Create React App_ or something.
 
 ## noted. how do I use it?
 
 Okay. If you insist.
 
 ```bash
-npm init @afoot/project <flags>
+npm init @afoot <flags>
 ```
 
 with the following flags:
