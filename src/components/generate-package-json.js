@@ -129,7 +129,6 @@ function generatePackageJson(config) {
 
   let existing = {};
   let existingMessage;
-  // let errorMessage;
 
   if (existsSync('./package.json')) {
     msg(CONSTANTS.generatePackageJson.existsOne, 'warn');

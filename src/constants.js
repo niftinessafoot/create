@@ -13,16 +13,13 @@ export const CONSTANTS = {
       `import React from 'react'; import {createRoot} from 'react-dom/client'; createRoot(document.getElementById('wrapper')).render(<div>hello world</div>)`,
   },
   generateReadme: {
-    content: (name, description) =>
-      [
-        `# ${name}`,
-        `${description}`,
-        `## usage`,
-        `## license`,
-        `[MIT](./LICENSE) © [Matthew Smith](http://www.niftinessafoot.com)`,
-        `## made with ❤️ and ☕️ by`,
-        `![Niftiness Afoot!](https://gist.githubusercontent.com/niftinessafoot/2dba588395cb557293d5f09aebcd2ab0/raw/770293c76bead4f0986ff959f3ea8880017d92c0/bot.svg?sanitize=true) [Matthew Smith](https://github.com/niftinessafoot)`,
-      ].join('\n'),
+    content: [
+      `## usage`,
+      `## license`,
+      `[MIT](./LICENSE) © [Matthew Smith](https://www.niftinessafoot.com)`,
+      `## made with ❤️ and ☕️ by`,
+      `![Niftiness Afoot!](https://gist.githubusercontent.com/niftinessafoot/2dba588395cb557293d5f09aebcd2ab0/raw/770293c76bead4f0986ff959f3ea8880017d92c0/bot.svg?sanitize=true) [Matthew Smith](https://github.com/niftinessafoot)`,
+    ],
     success: '✅  Generated `README.md`',
     fail: '`README.md` already exists. Will not overwrite.',
   },
