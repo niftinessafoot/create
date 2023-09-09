@@ -133,8 +133,8 @@ async function init(_srcRoot) {
   groupEnd();
 
   group(bold('🧱 Installing Dependencies'));
-  // const installOutput = await installDependencies(settings, dependencies);
-  // log(installOutput);
+  const installOutput = await installDependencies(settings, dependencies);
+  log(installOutput);
   log(_);
   groupEnd();
 
